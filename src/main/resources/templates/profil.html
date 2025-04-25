@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.in.css}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+
+<th:block th:insert="~{/_menu}"></th:block>
+<th:block th:include="/_menu"></th:block>
+<div th:insert="/_menu"></div>
+
+<!-- Header navigation -->
+<div class="container">
+    <div class="row">
+        <div class="col-1" style="width: auto">
+            <ul class="nav justify-content-start">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pay My Buddy</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Transférer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Ajouter relation</a>
+                </li>
+                <!-- ajouter une condition -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Se deconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h1 class="offset-5">Page Profil ! </h1>
+
+<div class="container" style="margin-top: 15%">
+    <div class="divCentre" style="justify-self: center">
+        <div class="row">
+            <div class="col-1" style="width: auto">Username</div>
+            <div class="col-1" style="width: auto">@username  ></div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-1" style="width: auto">Mail</div>
+            <div class="col-1" style="width: auto">nom@domain.com  ></div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row" >
+            <div class="col-1" style="width: auto">Mot de passe</div>
+            <div class="col-1" style="width: auto">mot de passe  ></div>
+            <div class="col-2">
+                <button class="btn btn-warning" style="color: white" type="submit">Modifier</button></div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+</body>
+</html>
