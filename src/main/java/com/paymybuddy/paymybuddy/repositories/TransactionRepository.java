@@ -10,4 +10,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> getTransactionsBySender(User sender);
 
     List<Transaction> sender(User sender);
+
+    List<Transaction> findTransactionsBySender(User sender);
 }
