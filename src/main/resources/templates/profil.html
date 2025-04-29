@@ -10,39 +10,8 @@
 </head>
 <body>
 
-<th:block th:insert="~{/_menu}"></th:block>
-<th:block th:include="/_menu"></th:block>
-<div th:insert="/_menu"></div>
-
 <!-- Header navigation -->
-<div class="container">
-    <div class="row">
-        <div class="col-1" style="width: auto">
-            <ul class="nav justify-content-start">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pay My Buddy</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-10">
-            <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Transférer</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Ajouter relation</a>
-                </li>
-                <!-- ajouter une condition -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Se deconnecter</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+<th:block th:insert="~{/_menu}"></th:block>
 
 <h1 class="offset-5">Page Profil ! </h1>
 

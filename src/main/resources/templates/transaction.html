@@ -10,39 +10,8 @@
 </head>
 <body>
 
-<th:block th:insert="~{/_menu}"></th:block>
-<th:block th:include="/_menu"></th:block>
-<div th:insert="/_menu"></div>
-
 <!-- Header navigation -->
-<div class="container">
-    <div class="row">
-        <div class="col-1" style="width: auto">
-            <ul class="nav justify-content-start">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pay My Buddy</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-10">
-            <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Transférer</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Ajouter relation</a>
-                </li>
-                <!-- ajouter une condition -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Se deconnecter</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+<th:block th:insert="~{/_menu}"></th:block>
 
 <!-- titre page -->
 <h1 class="offset-5">Page Transfert ! </h1>
@@ -85,6 +54,7 @@
         </div>
     </form>
 
+    <!-- List of transaction -->
     <div class="row" style="margin-top: 10%">
         <table class="table table-hover caption-top">
             <caption>Mes transactions</caption>
@@ -97,6 +67,37 @@
             </thead>
             <tbody>
             <tr>
+                <td class="text-start">Laure-Anne</td>
+                <td >Restaurant</td>
+                <td class="text-end">10$</td>
+            </tr>
+            <tr>
+                <td class="text-start">Clara</td>
+                <td>Voyage</td>
+                <td class="text-end">25$</td>
+            </tr>
+            <tr>
+                <td class="text-start">Luc</td>
+                <td>Billets de cinéma</td>
+                <td class="text-end">8$</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row" style="margin-top: 10%">
+        <table class="table table-hover caption-top">
+            <caption>Mes transactions</caption>
+            <thead>
+            <tr>
+                <th scope="col" class="text-start">Relations</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="text-end">Montant</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.username}"></td>
                 <td class="text-start">Laure-Anne</td>
                 <td >Restaurant</td>
                 <td class="text-end">10$</td>

@@ -8,6 +8,6 @@ public class UserController {
 
     @GetMapping("/")
     public String getTest(){
-        return "transfert";
+        return "transaction";
     }
 }
