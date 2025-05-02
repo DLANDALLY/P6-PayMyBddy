@@ -1,17 +1,13 @@
 package com.paymybuddy.paymybuddy.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "transactions", indexes = {
         @Index(name = "idx_sender", columnList = "sender_id"),
@@ -32,4 +28,8 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
+
+    public Transaction() {
+        this.date = LocalDateTime.now();
+    }
 }

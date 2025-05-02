@@ -54,40 +54,50 @@
         </div>
     </form>
 
+    <form action="" method="post">
+        <div class="row">
+            <div class="col-3">
+                <div class="input mb-3"  th:each="connection : ${userConnections}">
+                    <select class="form-select" id="inputGroupSelect02" >
+                        <option selected disabled>Sélectionner une relation</option>
+                        <option th:each="connection : ${userConnections}"
+                                th:value="${connection}"
+                                th:text="${connection}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input mb-3">
+                    <input class="form-control"
+                           type="text"
+                           value="Description"
+                           aria-label="readonly input example" >
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <input class="form-control form-control-lg"
+                           type="number"
+                           min="0" max="1000" step="0"
+                           aria-label="readonly input example">
+                    <span class="input-group-text">$</span>
+                </div>
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary">Payer</button>
+            </div>
+        </div>
+    </form>
+
     <!-- List of transaction -->
     <div class="row" style="margin-top: 10%">
         <table class="table table-hover caption-top">
-            <caption>Mes transactions</caption>
-            <thead>
-            <tr>
-                <th scope="col" class="text-start">Relations</th>
-                <th scope="col">Description</th>
-                <th scope="col" class="text-end">Montant</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="text-start">Laure-Anne</td>
-                <td >Restaurant</td>
-                <td class="text-end">10$</td>
-            </tr>
-            <tr>
-                <td class="text-start">Clara</td>
-                <td>Voyage</td>
-                <td class="text-end">25$</td>
-            </tr>
-            <tr>
-                <td class="text-start">Luc</td>
-                <td>Billets de cinéma</td>
-                <td class="text-end">8$</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="row" style="margin-top: 10%">
-        <table class="table table-hover caption-top">
-            <caption>Mes transactions</caption>
+            <caption>
+                Mes transactions BDD
+                <span th:text="${user.username}"></span>
+                <span th:text="${transactions.size()}"></span>
+            </caption>
             <thead>
             <tr>
                 <th scope="col" class="text-start">Relations</th>
@@ -98,25 +108,19 @@
             <tbody>
             <tr th:each="transaction : ${transactions}">
                 <td th:text="${transaction.username}"></td>
-                <td class="text-start">Laure-Anne</td>
-                <td >Restaurant</td>
-                <td class="text-end">10$</td>
-            </tr>
-            <tr>
-                <td class="text-start">Clara</td>
-                <td>Voyage</td>
-                <td class="text-end">25$</td>
-            </tr>
-            <tr>
-                <td class="text-start">Luc</td>
-                <td>Billets de cinéma</td>
-                <td class="text-end">8$</td>
+                <td th:text="${transaction.description}"></td>
+                <td class="text-end"
+                    th:classappend="${transaction.amount > 0} ? 'text-success' : 'text-danger'"
+                    th:text="${transaction.amount}"
+                ></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
 </body>
 </html>

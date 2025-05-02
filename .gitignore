@@ -37,3 +37,4 @@ build/
 
 ### ID BDD ###
 .env
+/.apt_generated_tests/

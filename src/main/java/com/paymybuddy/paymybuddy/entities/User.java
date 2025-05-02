@@ -2,10 +2,7 @@ package com.paymybuddy.paymybuddy.entities;
 
 import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +13,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users", indexes = {
@@ -47,12 +45,13 @@ public class User {
     )
     private Set<User> connections = new HashSet<>();
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true )
     private List<Transaction> sentTransactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
     private LocalDateTime createdAt;
+
     // Getters, setters, equals, hashCode (important pour les Set)...
 }
