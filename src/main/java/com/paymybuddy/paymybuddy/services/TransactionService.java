@@ -5,22 +5,27 @@ import com.paymybuddy.paymybuddy.dtos.transaction.SenderDto;
 import com.paymybuddy.paymybuddy.dtos.transaction.TransactionDto;
 import com.paymybuddy.paymybuddy.entities.Transaction;
 import com.paymybuddy.paymybuddy.entities.User;
+import com.paymybuddy.paymybuddy.repositories.BankAccountRepository;
 import com.paymybuddy.paymybuddy.repositories.TransactionRepository;
+import com.paymybuddy.paymybuddy.repositories.UserRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.ITransaction;
+import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransaction {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private BankAccountRepository bankAccountRepository;
+    @Autowired
+    private IUser userService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -49,14 +54,45 @@ public class TransactionService implements ITransaction {
                 }).toList();
     }
 
-
+    @Override
     public List<Transaction> getTransactionBySender(User user){
         return transactionRepository.findTransactionsBySender(user);
     }
 
+    @Override
     public List<Transaction> getTransactionByReceiver(User user){
         return transactionRepository.findTransactionsByReceiver(user);
     }
+
+    public Transaction getTransaction(User session, String email ){
+        //Process transaction
+
+        //emai // description // payer
+
+        //Transaction
+        // userSession : HttpSession
+        User userSender = userService.getUserById(session.getId());
+        // userRequest : email -> getUserByEmail(email)
+        User userReceiver = userService.getUserByEmail(email);
+
+
+        // Bank
+        // double amount = userSession.getAmount()
+        // userSession.setAmount( amount - payer)
+        // userRequest.
+
+
+        // sender :: Sender(User session) receiver(userRequest)
+
+        // addTransaction(object Transaction)
+
+        return null;
+    }
+
+    public void addTransaction(){
+
+    }
+
 
     private ReceiverDto ReceiverMapper(Transaction transaction) {
         return  modelMapper.map(transaction, ReceiverDto.class);

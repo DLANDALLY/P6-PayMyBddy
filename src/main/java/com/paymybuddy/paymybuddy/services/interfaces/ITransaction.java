@@ -12,4 +12,8 @@ public interface ITransaction {
     //List<Transaction> getReceiverTransaction(User user);
 
     List<TransactionDto> getReceiverAndSenderTransaction(User user);
+
+    List<Transaction> getTransactionBySender(User user);
+
+    List<Transaction> getTransactionByReceiver(User user);
 }

@@ -23,16 +23,37 @@ public class UserService implements IUser {
     }
 
     @Override
-    public Set<String> getConnections(User userSession) {
-        System.out.println("### get connection");
+    public Set<String> getConnectionEmails(User userSession) {
         User user = userRepository.findById(userSession.getId()).orElse(null);
         assert user != null;
-        Set<String> connections = user.getConnections().stream()
+
+        return user.getConnections().stream()
                 .map(User::getEmail)
                 .collect(Collectors.toSet());
+    }
 
-        connections.forEach(System.out::println);
-        return connections ;
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> searchByEmail(String keyword) {
+        return userRepository.findByEmailContainingIgnoreCase(keyword);
+    }
+
+    @Override
+    public User getUserById(int id){
+        return userRepository.findById(id).get();
+    }
+
+    @Override
+    public boolean AddNewRelation(User user, String email) {
+        User userdb = getUserByEmail(email);
+        User userSession = getUserById(user.getId());
+
+        userSession.getConnections().add(userdb);
+        userRepository.save(userSession);
+        return false;
     }
 
     //TODO : Faut il que les users est mutuellement leurs email dans leur relation pour pouvoir s'envoyer de l'argent
