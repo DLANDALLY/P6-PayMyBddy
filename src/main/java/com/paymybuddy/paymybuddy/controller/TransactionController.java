@@ -42,6 +42,7 @@ public class TransactionController {
         model.addAttribute("transactions", transactions);
         model.addAttribute("transactionForm", new TransactionForm());
         model.addAttribute("user", user);
+        model.addAttribute("maxBalance", user.getBankAccount().getBalance());
         return "transaction";
     }
 
@@ -53,14 +54,17 @@ public class TransactionController {
         Set<String> emails = (Set<String>) session.getAttribute("emails");
         List<TransactionDto> transactions = (List<TransactionDto>) session.getAttribute("transactions");
 
-
         if (result.hasErrors()) {
             model.addAttribute("emails", emails);
             model.addAttribute("transactions", transactions);
-            model.addAttribute("error", result.getFieldError());
+            model.addAttribute("error", result.getFieldError()); // ne sert a rien ??
+            model.addAttribute("maxBalance", userSession.getBankAccount().getBalance());
+
             return "transaction";
         }
 
-        return "transaction";
+        transactionService.getTransaction(userSession, transactionForm);
+
+        return "redirect:/transaction";
     }
 }

@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.entities;
 
+import com.paymybuddy.paymybuddy.entities.enums.ERole;
 import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "users", indexes = {
         @Index(name = "idx_email", columnList = "email")
 })
@@ -52,6 +54,7 @@ public class User {
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
     private LocalDateTime createdAt;
+    private ERole role;
 
     // Getters, setters, equals, hashCode (important pour les Set)...
 }

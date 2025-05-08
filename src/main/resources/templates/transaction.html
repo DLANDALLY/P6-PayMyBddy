@@ -31,7 +31,6 @@
                                 th:text="${email}">
                         </option>
                     </select>
-                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Nom invalide</p>
                 </div>
             </div>
             <div class="col-3">
@@ -41,7 +40,6 @@
                            value="Description"
                            th:field="*{description}"
                            aria-label="readonly input example" >
-                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Nom invalide</p>
                 </div>
             </div>
             <div class="col-3">
@@ -49,14 +47,26 @@
                     <input class="form-control form-control-lg"
                            type="number"
                            th:field="*{amount}"
-                           min="0" max="1000" step="0"
+                           min="0.0"
+                           th:max="${maxBalance - (maxBalance * 0.005)}"
+                           step="0.01"
                            aria-label="readonly input example">
-                    <span class="input-group-text">$</span>
-                    <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Nom invalide</p>
+                    <span class="input-group-text">€</span>
                 </div>
             </div>
             <div class="col-3">
                 <button type="submit" class="btn btn-primary">Payer</button>
+            </div>
+        </div>
+        <div class="row" th:classappend="text-danger">
+            <div class="col-3">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            </div>
+            <div class="col-3">
+                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+            </div>
+            <div class="col-3">
+                <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></p>
             </div>
         </div>
     </form>

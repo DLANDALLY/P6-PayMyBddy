@@ -5,11 +5,12 @@ import com.paymybuddy.paymybuddy.dtos.transaction.SenderDto;
 import com.paymybuddy.paymybuddy.dtos.transaction.TransactionDto;
 import com.paymybuddy.paymybuddy.entities.Transaction;
 import com.paymybuddy.paymybuddy.entities.User;
-import com.paymybuddy.paymybuddy.repositories.BankAccountRepository;
+import com.paymybuddy.paymybuddy.form.TransactionForm;
 import com.paymybuddy.paymybuddy.repositories.TransactionRepository;
-import com.paymybuddy.paymybuddy.repositories.UserRepository;
+import com.paymybuddy.paymybuddy.services.interfaces.IBankAccount;
 import com.paymybuddy.paymybuddy.services.interfaces.ITransaction;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Service
 public class TransactionService implements ITransaction {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
-    private BankAccountRepository bankAccountRepository;
+    private IBankAccount bankAccountService;
     @Autowired
     private IUser userService;
     @Autowired
@@ -64,33 +66,75 @@ public class TransactionService implements ITransaction {
         return transactionRepository.findTransactionsByReceiver(user);
     }
 
-    public Transaction getTransaction(User session, String email ){
-        //Process transaction
-
-        //emai // description // payer
-
-        //Transaction
+    /**
+     * pour faire une transaction
+     * - le compte du UserSender
+     * - le compte du UserReceiver
+     *
+     * condition : Verifier que le UserSender à le montant annoncé
+     *
+     * soustraire le prix du compte UserSender
+     * addition le prix du compte UserReceiver
+     *
+     * (method de la class BankService)
+     * update le compte UserSender
+     * update le compte UserReceiver
+     *
+     * Ajouter la transaction dans la base de donnée
+     * create - createTransaction(idSender, idReceiver, amount, description)
+     * add(new Transaction)
+     */
+    @Override
+    public Transaction getTransaction(User session, TransactionForm transactionForm){
+        System.out.println("GET transaction :");
         // userSession : HttpSession
         User userSender = userService.getUserById(session.getId());
-        // userRequest : email -> getUserByEmail(email)
-        User userReceiver = userService.getUserByEmail(email);
+        System.out.println("################# start ##################");
+        System.out.println("sender: "+ userSender.getUsername());
+        System.out.println("balance: "+ userSender.getBankAccount().getBalance());
+        System.out.println("##########################################");
+
+        User userReceiver = userService.getUserByEmail(transactionForm.getEmail());
+        System.out.println("receiver: "+ userReceiver.getUsername());
+        System.out.println("balance: "+ userReceiver.getBankAccount().getBalance());
+
+        double tax = (0.5 * transactionForm.getAmount())/100 ; //tax
+        double calculeMontant = transactionForm.getAmount() + tax;
+        double balanceSender = userSender.getBankAccount().getBalance() - (calculeMontant);
+        double balanceReceiver = userReceiver.getBankAccount().getBalance() + transactionForm.getAmount();
+
+        if (balanceSender < 0) {
+            String error = "tas pas de tune mec :p";}
+
+        userSender.getBankAccount().setBalance(balanceSender);
+        userReceiver.getBankAccount().setBalance(balanceReceiver);
 
 
-        // Bank
-        // double amount = userSession.getAmount()
-        // userSession.setAmount( amount - payer)
-        // userRequest.
+        System.out.println("################# Update ##################");
+        System.out.println("sender: "+ userSender.getUsername());
+        System.out.println("Update balance: "+ userSender.getBankAccount().getBalance());
+        System.out.println("Montant de la tax = "+ tax);
+        System.out.println("##########################################");
+        System.out.println("receiver: "+ userReceiver.getUsername());
+        System.out.println("Update balance: "+ userReceiver.getBankAccount().getBalance());
+        System.out.println("##########################################");
 
+        bankAccountService.updateBank(userSender.getBankAccount());
+        bankAccountService.updateBank(userReceiver.getBankAccount());
 
-        // sender :: Sender(User session) receiver(userRequest)
+        Transaction transaction = new Transaction();
+        transaction.setSender(userSender);
+        transaction.setReceiver(userReceiver);
+        transaction.setDescription(transactionForm.getDescription());
+        transaction.setAmount(calculeMontant);
+        createTransaction(transaction);
 
-        // addTransaction(object Transaction)
 
         return null;
     }
 
-    public void addTransaction(){
-
+    public void createTransaction(Transaction transaction){
+        transactionRepository.save(transaction);
     }
 
 

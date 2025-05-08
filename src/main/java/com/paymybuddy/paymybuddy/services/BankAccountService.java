@@ -17,7 +17,18 @@ public class BankAccountService implements IBankAccount {
         return bankAccountRepository.findById(bankId).orElse(null);
     }
 
+    @Override
     public BankAccount updateBank(BankAccount bankAccount){
         return bankAccountRepository.save(bankAccount);
+    }
+
+    @Override
+    public void createBankAccount(BankAccount bankAccount){
+        bankAccountRepository.save(bankAccount);
+    }
+
+    @Override
+    public int getBankAccountSize() {
+        return bankAccountRepository.findAll().size();
     }
 }
