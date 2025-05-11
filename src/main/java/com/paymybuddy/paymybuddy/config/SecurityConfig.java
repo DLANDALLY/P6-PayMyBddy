@@ -1,28 +1,24 @@
 package com.paymybuddy.paymybuddy.config;
 
-import com.paymybuddy.paymybuddy.entities.User;
-import com.paymybuddy.paymybuddy.repositories.UserRepository;
 import com.paymybuddy.paymybuddy.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-//@Configuration
-//@EnableWebSecurity
+@Configuration
+@EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -30,48 +26,49 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http
+                .getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(daoAuthenticationProvider())
+                .build();
     }
+
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/home", "/productList", "/shoppingCart", "/admin/login", "/css/**", "/js/**", "/images/**", "/errorpage", "/error")
-                        .permitAll()
-                        .requestMatchers("/admin/orderList", "/admin/order", "/admin/accountInfo", "/admin/logout", "/admin/index")
-                        .hasAnyRole("EMPLOYEE", "MANAGER")
-                        .requestMatchers("/admin/product", "/admin/**")
-                        .hasRole("MANAGER")
-                        .anyRequest()
-                        .authenticated()
-                )
+                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
-                        .loginPage("/admin/login")
+                        .loginPage("/login")
                         .loginProcessingUrl("/j_spring_security_check")
-                        .defaultSuccessUrl("/admin/accountInfo", true)
-                        .failureUrl("/admin/login?error=true")
+                        .defaultSuccessUrl("/profile", true)
+                        .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/admin/logout")
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .permitAll()
                 )
                 .sessionManagement(session -> session
-                        .maximumSessions(1)
-                )
+                        .maximumSessions(1))
                 .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/errorpage")
-                );
+                        .accessDeniedPage("/errorpage"));
 
         return http.build();
     }
@@ -83,6 +80,48 @@ public class SecurityConfig {
      *         viewResolver.setPrefix("/WEB-INF/views/");
      *         viewResolver.setSuffix(".jsp");
      *         return viewResolver;
+     *     }
+     */
+
+    /**
+     * @Bean
+     *     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+     *         http
+     *                 .authorizeHttpRequests(authz -> authz
+     *                         .requestMatchers("/", "/home", "/productList", "/shoppingCart", "/admin/login", "/css/**", "/js/**", "/images/**", "/errorpage", "/error")
+     *                         .permitAll()
+     *                         .requestMatchers("/admin/orderList", "/admin/order", "/admin/accountInfo", "/admin/logout", "/admin/index")
+     *                         .hasAnyRole("EMPLOYEE", "MANAGER")
+     *                         .requestMatchers("/admin/product", "/admin/**")
+     *                         .hasRole("MANAGER")
+     *                         .anyRequest()
+     *                         .authenticated()
+     *                 )
+     *                 .userDetailsService(userDetailsServiceImpl)
+     *                 .formLogin(form -> form
+     *                         .loginPage("/admin/login")
+     *                         .loginProcessingUrl("/j_spring_security_check")
+     *                         .defaultSuccessUrl("/admin/accountInfo", true)
+     *                         .failureUrl("/admin/login?error=true")
+     *                         .usernameParameter("email")
+     *                         .passwordParameter("password")
+     *                         .permitAll()
+     *                 )
+     *                 .logout(logout -> logout
+     *                         .logoutUrl("/admin/logout")
+     *                         .logoutSuccessUrl("/")
+     *                         .invalidateHttpSession(true)
+     *                         .clearAuthentication(true)
+     *                         .permitAll()
+     *                 )
+     *                 .sessionManagement(session -> session
+     *                         .maximumSessions(1)
+     *                 )
+     *                 .exceptionHandling(exception -> exception
+     *                         .accessDeniedPage("/errorpage")
+     *                 );
+     *
+     *         return http.build();
      *     }
      */
 

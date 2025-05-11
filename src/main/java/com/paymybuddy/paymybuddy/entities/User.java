@@ -1,6 +1,5 @@
 package com.paymybuddy.paymybuddy.entities;
 
-import com.paymybuddy.paymybuddy.entities.enums.ERole;
 import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
 import lombok.*;
@@ -15,7 +14,6 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "users", indexes = {
@@ -24,7 +22,7 @@ import java.util.Set;
 public class User {
     @Unsigned
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(length = 20, nullable = false)
     private String username;
@@ -32,11 +30,11 @@ public class User {
     @Column(length =50, unique = true, nullable = false)
     private String email;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 128, nullable = false)
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bankAccount_id", referencedColumnName = "id")
+    @JoinColumn(name = "bankAccount_id")
     private BankAccount bankAccount;
 
     @ManyToMany
@@ -53,8 +51,14 @@ public class User {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<AppRole> roles;
+
     private LocalDateTime createdAt;
-    private ERole role;
+
+    public User() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     // Getters, setters, equals, hashCode (important pour les Set)...
 }

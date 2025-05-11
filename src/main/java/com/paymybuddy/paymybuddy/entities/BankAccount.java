@@ -10,11 +10,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 @Table(name = "bank_accounts")
 public class BankAccount {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private double balance;
     private boolean active;
 
@@ -23,10 +24,5 @@ public class BankAccount {
 
     public BankAccount() {
         this.active = true;
-    }
-
-    public BankAccount(User user) {
-        this.active = true;
-        this.user = user;
     }
 }

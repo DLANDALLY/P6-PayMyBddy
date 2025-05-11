@@ -3,6 +3,7 @@ package com.paymybuddy.paymybuddy.controller;
 import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +18,9 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/relation")
+@AllArgsConstructor
 public class RelationController {
-    @Autowired
+
     private IUser userService;
 
     @GetMapping("test")

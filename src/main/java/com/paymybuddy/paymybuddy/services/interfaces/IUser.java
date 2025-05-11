@@ -13,11 +13,15 @@ public interface IUser {
 
     List<User> searchByEmail(String keyword);
 
-    User getUserById(int id);
+    User getUserById(long id);
+
+    boolean isPresentUserById(long id);
 
     boolean AddNewRelation(User user, String keyword);
 
     Set<String> getConnectionEmails(User user);
 
     boolean createUserAndBankAccount(RegisterForm registerForm);
+
+    User createUser(RegisterForm registerForm);
 }

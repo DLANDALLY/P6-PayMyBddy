@@ -10,10 +10,12 @@ import com.paymybuddy.paymybuddy.repositories.TransactionRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.IBankAccount;
 import com.paymybuddy.paymybuddy.services.interfaces.ITransaction;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,14 +23,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TransactionService implements ITransaction {
-    @Autowired
+@AllArgsConstructor
+public class TransactionServiceImpl implements ITransaction {
     private TransactionRepository transactionRepository;
-    @Autowired
     private IBankAccount bankAccountService;
-    @Autowired
     private IUser userService;
-    @Autowired
     private ModelMapper modelMapper;
 
 
@@ -84,6 +83,7 @@ public class TransactionService implements ITransaction {
      * create - createTransaction(idSender, idReceiver, amount, description)
      * add(new Transaction)
      */
+    @Transactional
     @Override
     public Transaction getTransaction(User session, TransactionForm transactionForm){
         System.out.println("GET transaction :");
@@ -98,7 +98,7 @@ public class TransactionService implements ITransaction {
         System.out.println("receiver: "+ userReceiver.getUsername());
         System.out.println("balance: "+ userReceiver.getBankAccount().getBalance());
 
-        double tax = (0.5 * transactionForm.getAmount())/100 ; //tax
+        double tax = (0.5 * transactionForm.getAmount())/100 ; //TODO: tax ajouter la tax au compte "admin"
         double calculeMontant = transactionForm.getAmount() + tax;
         double balanceSender = userSender.getBankAccount().getBalance() - (calculeMontant);
         double balanceReceiver = userReceiver.getBankAccount().getBalance() + transactionForm.getAmount();
@@ -129,18 +129,19 @@ public class TransactionService implements ITransaction {
         transaction.setAmount(calculeMontant);
         createTransaction(transaction);
 
-
         return null;
     }
 
+    //Ajt execption
     public void createTransaction(Transaction transaction){
         transactionRepository.save(transaction);
     }
 
-
+    //A supp
     private ReceiverDto ReceiverMapper(Transaction transaction) {
         return  modelMapper.map(transaction, ReceiverDto.class);
     }
+    //A supp
     private SenderDto SenderMapper(Transaction transaction) {
         return  modelMapper.map(transaction, SenderDto.class);
     }

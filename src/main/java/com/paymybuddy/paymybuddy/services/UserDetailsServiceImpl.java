@@ -1,37 +1,36 @@
 package com.paymybuddy.paymybuddy.services;
 
+import com.paymybuddy.paymybuddy.entities.AppRole;
 import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.paymybuddy.paymybuddy.services.interfaces.IAuth;
+import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
+@Service
+@AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    @Autowired
-    UserRepository userRepository;
+    //private final IUser userService;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found by : "+ email));
+        //User user = authService.loadUserByUsername(email);
+        User user = userRepository.findUserByEmail(email).orElse(null);
+        if (user == null) throw new UsernameNotFoundException(String.format("Email %s not found ", email));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities(user)
-        );
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRoles()
+                        .stream()
+                        .map(AppRole::getRole)
+                        .toArray(String[]::new))
+                .build();
     }
-
-    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
-    }
-
-
 }

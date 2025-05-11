@@ -8,10 +8,6 @@ import com.paymybuddy.paymybuddy.form.TransactionForm;
 import java.util.List;
 
 public interface ITransaction {
-    //List<Transaction> getAllTransaction(User user);
-    //List<Transaction> getSenderTransaction(User user);
-    //List<Transaction> getReceiverTransaction(User user);
-
     List<TransactionDto> getReceiverAndSenderTransaction(User user);
 
     List<Transaction> getTransactionBySender(User user);

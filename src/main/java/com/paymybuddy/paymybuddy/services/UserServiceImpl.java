@@ -4,28 +4,27 @@ import com.paymybuddy.paymybuddy.entities.BankAccount;
 import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.form.RegisterForm;
 import com.paymybuddy.paymybuddy.repositories.UserRepository;
-import com.paymybuddy.paymybuddy.services.interfaces.IBankAccount;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserService implements IUser {
-    @Autowired
+@AllArgsConstructor
+public class UserServiceImpl implements IUser {
     private UserRepository userRepository;
-    @Autowired
-    private IBankAccount bankAccountRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        return userRepository.findUserByEmail(email)
+                .orElse(null);
     }
 
     @Override
@@ -44,24 +43,43 @@ public class UserService implements IUser {
         user.setUsername(registerForm.getUsername());
         user.setEmail(registerForm.getEmail());
         user.setPassword(registerForm.getPassword());
-        createUser(user);
-        creatBankAccout(user);
+        createUser(registerForm);
+        //creatBankAccout(user);
         return true;
     }
 
-    public void createUser(User user){
-        userRepository.save(user);
+    @Override
+    public User createUser(RegisterForm registerForm) {
+        System.out.println("form test "+ registerForm.getEmail());
+        User userDB = getUserByEmail(registerForm.getEmail());
+        if (userDB != null) throw new RuntimeException("This user already exist");
+
+        BankAccount bankAccount = BankAccount.builder()
+                .balance(0)
+                .active(true)
+                .build();
+
+        userDB = User.builder()
+                .username(registerForm.getUsername())
+                .email(registerForm.getEmail())
+                .password(passwordEncoder.encode(registerForm.getPassword()))
+                .bankAccount(bankAccount)
+                .build();
+
+        userRepository.save(userDB);
+        return userDB;
     }
 
-    public void creatBankAccout(User user){
-        int size = bankAccountRepository.getBankAccountSize();
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setUser(user);
-        bankAccount.setBalance(0);
-        bankAccount.setId(size + 1);
-        bankAccountRepository.createBankAccount(bankAccount);
-    }
+//    public void creatBankAccout(User user){
+//        int size = bankAccountRepository.getBankAccountSize();
+//        BankAccount bankAccount = new BankAccount();
+//        bankAccount.setUser(user);
+//        bankAccount.setBalance(0);
+//        bankAccount.setId(size + 1);
+//        bankAccountRepository.createBankAccount(bankAccount);
+//    }
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -72,8 +90,14 @@ public class UserService implements IUser {
     }
 
     @Override
-    public User getUserById(int id){
-        return userRepository.findById(id).get();
+    public User getUserById(long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No one user is found by this "+ id));
+    }
+
+    @Override
+    public boolean isPresentUserById(long id){
+        return userRepository.findById(id).isPresent();
     }
 
     @Override

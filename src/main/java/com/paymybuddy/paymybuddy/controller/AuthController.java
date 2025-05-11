@@ -3,8 +3,10 @@ package com.paymybuddy.paymybuddy.controller;
 import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.form.RegisterForm;
 import com.paymybuddy.paymybuddy.form.TransactionForm;
+import com.paymybuddy.paymybuddy.services.interfaces.IAuth;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,11 +20,11 @@ import org.springframework.web.bind.support.SessionStatus;
 
 @Slf4j
 @Controller
+@AllArgsConstructor
 public class AuthController {
-    @Autowired
     private IUser userService;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder; // A supp
+    private IAuth authservice;
 
     /**
      * Enpoint Login
