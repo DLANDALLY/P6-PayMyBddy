@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,13 +19,23 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.util.Map;
+
 @Slf4j
 @Controller
 @AllArgsConstructor
 public class AuthController {
     private IUser userService;
-    private BCryptPasswordEncoder passwordEncoder; // A supp
     private IAuth authservice;
+
+    //TODO : BUG = Probleme de transf "calcule tax"
+    //TODO renommer toutes les methods
+    //TODO : FT = Renommer les cles etrangere - ajouter les +
+    //TODO : FT = redirige l'user lorsqu'il se trompe d'URL
+    //TODO : FT = ajout message derreur GETMAPPING erreor
+    //TODO : FT = ajouter un message de confirmation d'enregistrement
+    //TODO : FT = Ajouter la dependance de boostrap
+    //TODO : BUG = lorsque je click sur valide le formulaire vide la page est rediriger
 
     /**
      * Enpoint Login
@@ -34,15 +45,19 @@ public class AuthController {
         return "login";
     }
 
-    //TODO : a faire - a connecter la la config
+    //Le login est gerer par spring security (a supp)
     @PostMapping("/login")
     public String handleLogin(@RequestParam String emailField,
                               @RequestParam String passwordField,
                               HttpSession session) {
         log.info("Login attempt");
         User user = userService.getUserByEmail(emailField);
-        session.setAttribute("user", user);
+        if(user != null){
+            session.setAttribute("user", user);
+            return "redirect:/profile";
+        }
 
+        session.setAttribute("error", "Un probleme ses produit lors de la connection");
         return "redirect:/profile";
     }
 
@@ -50,8 +65,22 @@ public class AuthController {
      * End point Registe
      */
     @GetMapping("/register")
-    public String signIn(Model model) {
+    public String signIn(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username != null)
+            model.addAttribute("username", username);
+
         model.addAttribute("registerForm", new RegisterForm());
+        return "register";
+    }
+
+    @GetMapping("/registerbygithub")
+    public String signInByGitHub(OAuth2AuthenticationToken authenticationToken, Model model) {
+        Map<String, Object> attributes = authenticationToken.getPrincipal().getAttributes();
+        String username = (String) attributes.get("login");
+
+        model.addAttribute("registerForm", new RegisterForm());
+        model.addAttribute("username", username);
         return "register";
     }
 
@@ -59,24 +88,15 @@ public class AuthController {
     public String handleRegister(@Validated @ModelAttribute RegisterForm registerForm,
                                  BindingResult result, HttpSession session, Model model) {
         log.info("Register attempt");
-
-        registerForm.setPassword(passwordEncoder.encode(registerForm.getPassword())); // Avoir si tjrs necessaire ??
-        if (result.hasErrors()){
-            return "/register";}
+        if (result.hasErrors()) return "/registerRequest";
 
         //Creer un user et un compte
-        boolean creauGreat = userService.createUserAndBankAccount(registerForm);
+        User user = authservice.addNewUser(registerForm);
+        if (user == null) {
+            model.addAttribute("error", "Un probleme est survenu");
+            return "/registerRequest";}
 
-
-        User user = userService.getUserByEmail(registerForm.getEmail());
-        System.out.println("######### start ###########");
-        System.out.println("Creation de user et sa banque");
-        System.out.println(" bool "+ creauGreat);
-        System.out.println("User name = "+ user.getUsername());
-        System.out.println("Compte id = "+ user.getBankAccount().getId());
-        System.out.println("Compte id = "+ user.getBankAccount().getBalance());
         session.setAttribute("user", user);
-
         return "redirect:/profile";
     }
 
@@ -85,8 +105,15 @@ public class AuthController {
      */
     @GetMapping("/logout")
     public String logout(SessionStatus sessionStatus) {
-        sessionStatus.setComplete(); // Supprime l'objet "user" de la session
-        return "redirect:/login"; // Redirige vers la page de login après déconnexion
+        sessionStatus.setComplete();
+        return "redirect:/login";
+    }
+
+    @GetMapping("/error")
+    public String errePage(HttpSession session, Model model){
+        //if (message != null) model.addAttribute("error", message);
+
+        return "/error";
     }
 
 }

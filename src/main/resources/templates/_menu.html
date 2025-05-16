@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="row">
         <div class="col-1" style="width: auto">
             <ul class="nav justify-content-start">
@@ -20,7 +20,9 @@
                 </li>
                 <!-- ajouter une condition -->
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logout}">Se deconnecter</a>
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn btn-light" value="Se deconnecter">
+                    </form>
                 </li>
             </ul>
         </div>

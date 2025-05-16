@@ -47,8 +47,8 @@ CREATE TABLE public.transactions (
     "date" timestamp NULL,
     description varchar(255) NULL,
     CONSTRAINT transactions_pkey PRIMARY KEY (id),
-    CONSTRAINT fk3ly4r8r6ubt0blftudix2httv FOREIGN KEY (sender_id) REFERENCES public.users(id),
-    CONSTRAINT fk5nn8ird7idyxyxki68gox2wbx FOREIGN KEY (receiver_id) REFERENCES public.users(id)
+    CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES public.users(id),
+    CONSTRAINT fk_receiver_id_ FOREIGN KEY (receiver_id) REFERENCES public.users(id)
 );
 CREATE INDEX idx_receiver ON public.transactions USING btree (receiver_id);
 CREATE INDEX idx_sender ON public.transactions USING btree (sender_id);
@@ -64,7 +64,7 @@ CREATE TABLE public.user_connections (
     connection_id int NOT NULL,
     user_id int NOT NULL,
     CONSTRAINT user_connections_pkey PRIMARY KEY (connection_id, user_id),
-    CONSTRAINT fk56b5yg0vwv72mhph7e5u2hn6x FOREIGN KEY (user_id) REFERENCES public.users(id),
+    CONSTRAINT fk FOREIGN KEY (user_id) REFERENCES public.users(id),
     CONSTRAINT fkohvj3bhf0c6gb645k4atn4rax FOREIGN KEY (connection_id) REFERENCES public.users(id)
 );
 

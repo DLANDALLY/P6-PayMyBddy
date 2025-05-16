@@ -14,5 +14,5 @@ public interface ITransaction {
 
     List<Transaction> getTransactionByReceiver(User user);
 
-    Transaction getTransaction(User session, TransactionForm transactionForm);
+    void getTransaction(User session, TransactionForm transactionForm);
 }

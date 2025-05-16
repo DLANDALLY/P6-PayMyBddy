@@ -22,13 +22,13 @@ public class PaymybuddyApplication {
 	//@Bean
 	CommandLineRunner commandLineRunner(AuthService authService){
 		RegisterForm r = new RegisterForm();
-		r.setUsername("Test9");
-		r.setPassword("123");
-		r.setEmail("test9@hotmail.fr");
+		r.setUsername("admin");
+		r.setPassword("admin");
+		r.setEmail("admin@hotmail.fr");
 
 		return args -> {
-			authService.addNewRole("USER");
-			authService.addNewRole("ADMIN");
+			//authService.addNewRole("USER");
+			//authService.addNewRole("ADMIN");
 			authService.addNewUser(r);
 			authService.addRoleToUser(r.getEmail(), "USER");
 		};

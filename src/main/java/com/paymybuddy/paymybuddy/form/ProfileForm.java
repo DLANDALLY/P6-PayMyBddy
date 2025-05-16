@@ -8,14 +8,15 @@ import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Setter
-public class RegisterForm {
+public class ProfileForm {
+    @NotBlank
+    private long id;
+
     @NotBlank(message = "Username is required")
     @Length(max = 20, message = "Username not conform")
     private String username;
 
     @Email(message = "Please enter a valid email")
-    @NotBlank(message = "Email is required")
-    @Length(max = 50, message = "Email not conform")
     private String email;
 
     @Length(min = 6, max = 50, message = "Password not conform")

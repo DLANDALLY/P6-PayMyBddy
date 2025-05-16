@@ -85,42 +85,24 @@ public class TransactionServiceImpl implements ITransaction {
      */
     @Transactional
     @Override
-    public Transaction getTransaction(User session, TransactionForm transactionForm){
-        System.out.println("GET transaction :");
-        // userSession : HttpSession
+    public void getTransaction(User session, TransactionForm transactionForm){
         User userSender = userService.getUserById(session.getId());
-        System.out.println("################# start ##################");
-        System.out.println("sender: "+ userSender.getUsername());
-        System.out.println("balance: "+ userSender.getBankAccount().getBalance());
-        System.out.println("##########################################");
 
         User userReceiver = userService.getUserByEmail(transactionForm.getEmail());
-        System.out.println("receiver: "+ userReceiver.getUsername());
-        System.out.println("balance: "+ userReceiver.getBankAccount().getBalance());
+        User userBank = userService.getUserByEmail("admin@hotmail.fr");
 
         double tax = (0.5 * transactionForm.getAmount())/100 ; //TODO: tax ajouter la tax au compte "admin"
         double calculeMontant = transactionForm.getAmount() + tax;
         double balanceSender = userSender.getBankAccount().getBalance() - (calculeMontant);
         double balanceReceiver = userReceiver.getBankAccount().getBalance() + transactionForm.getAmount();
 
-        if (balanceSender < 0) {
-            String error = "tas pas de tune mec :p";}
-
         userSender.getBankAccount().setBalance(balanceSender);
         userReceiver.getBankAccount().setBalance(balanceReceiver);
-
-
-        System.out.println("################# Update ##################");
-        System.out.println("sender: "+ userSender.getUsername());
-        System.out.println("Update balance: "+ userSender.getBankAccount().getBalance());
-        System.out.println("Montant de la tax = "+ tax);
-        System.out.println("##########################################");
-        System.out.println("receiver: "+ userReceiver.getUsername());
-        System.out.println("Update balance: "+ userReceiver.getBankAccount().getBalance());
-        System.out.println("##########################################");
+        userBank.getBankAccount().setBalance(tax);
 
         bankAccountService.updateBank(userSender.getBankAccount());
         bankAccountService.updateBank(userReceiver.getBankAccount());
+        bankAccountService.updateBank(userBank.getBankAccount());
 
         Transaction transaction = new Transaction();
         transaction.setSender(userSender);
@@ -128,8 +110,6 @@ public class TransactionServiceImpl implements ITransaction {
         transaction.setDescription(transactionForm.getDescription());
         transaction.setAmount(calculeMontant);
         createTransaction(transaction);
-
-        return null;
     }
 
     //Ajt execption
@@ -137,12 +117,5 @@ public class TransactionServiceImpl implements ITransaction {
         transactionRepository.save(transaction);
     }
 
-    //A supp
-    private ReceiverDto ReceiverMapper(Transaction transaction) {
-        return  modelMapper.map(transaction, ReceiverDto.class);
-    }
-    //A supp
-    private SenderDto SenderMapper(Transaction transaction) {
-        return  modelMapper.map(transaction, SenderDto.class);
-    }
+
 }

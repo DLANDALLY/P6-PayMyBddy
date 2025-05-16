@@ -1,6 +1,10 @@
 package com.paymybuddy.paymybuddy.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +21,11 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    //@NotNull
+    //@Column(precision = 10, scale = 2, nullable = false)
     private Double amount;
+
     private String description;
     private LocalDateTime date;
 

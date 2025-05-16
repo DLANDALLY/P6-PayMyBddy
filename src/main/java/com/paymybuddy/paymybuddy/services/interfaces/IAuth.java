@@ -16,4 +16,6 @@ public interface IAuth {
     void removeRoleFromUser(String email, String role);
 
     User loadUserByUsername(String email);
+
+    User getUserByEmail(String emailField);
 }

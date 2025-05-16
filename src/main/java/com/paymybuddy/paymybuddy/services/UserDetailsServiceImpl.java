@@ -2,6 +2,7 @@ package com.paymybuddy.paymybuddy.services;
 
 import com.paymybuddy.paymybuddy.entities.AppRole;
 import com.paymybuddy.paymybuddy.entities.User;
+import com.paymybuddy.paymybuddy.form.RegisterForm;
 import com.paymybuddy.paymybuddy.repositories.UserRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.IAuth;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
@@ -15,12 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    //private final IUser userService;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        //User user = authService.loadUserByUsername(email);
         User user = userRepository.findUserByEmail(email).orElse(null);
         if (user == null) throw new UsernameNotFoundException(String.format("Email %s not found ", email));
 

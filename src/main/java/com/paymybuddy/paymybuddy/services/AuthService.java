@@ -19,9 +19,7 @@ public class AuthService implements IAuth {
 
     @Override
     public User addNewUser(RegisterForm registerForm){
-        User user = userService.createUser(registerForm);
-        //bankAccountService.createBankAccount();
-        return user;
+        return userService.createUser(registerForm);
     }
 
     @Override
@@ -49,4 +47,26 @@ public class AuthService implements IAuth {
     public User loadUserByUsername(String email){
         return userService.getUserByEmail(email);
     }
+
+    @Override
+    public User getUserByEmail(String emailField) {
+        return null;
+    }
+
+//    public User registerOAuth2User(String email) {
+//        return userService.getUserByEmail(email)
+//                .orElseGet(() -> {
+//                    User user = authService.addNewUser(initUserOAuth());
+//                    authService.addRoleToUser(initUserOAuth().getEmail(), "USER");
+//                    return user;
+//                });
+//    }
+//
+//    private RegisterForm initUserOAuth(){
+//        RegisterForm r = new RegisterForm();
+//        r.setUsername("TestOAuth");
+//        r.setPassword("pass1234");
+//        r.setEmail("TestOAuth@hotmail.fr");
+//        return r;
+//    }
 }

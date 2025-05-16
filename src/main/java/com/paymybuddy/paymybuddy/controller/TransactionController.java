@@ -28,7 +28,8 @@ public class TransactionController {
     @Autowired
     private IUser userService;
 
-    //TODO
+    //TODO: BUG = retirer la liste des connexion du User de la liste d'ajout
+
     @GetMapping
     public String showTransactions(HttpSession session, Model model) {
         log.debug("transaction");

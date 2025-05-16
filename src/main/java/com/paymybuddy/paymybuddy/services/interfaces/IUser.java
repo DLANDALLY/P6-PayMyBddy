@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.services.interfaces;
 
 import com.paymybuddy.paymybuddy.entities.User;
+import com.paymybuddy.paymybuddy.form.ProfileForm;
 import com.paymybuddy.paymybuddy.form.RegisterForm;
 
 import java.util.List;
@@ -15,13 +16,15 @@ public interface IUser {
 
     User getUserById(long id);
 
-    boolean isPresentUserById(long id);
-
     boolean AddNewRelation(User user, String keyword);
+
+    boolean existsByEmail(String email);
 
     Set<String> getConnectionEmails(User user);
 
-    boolean createUserAndBankAccount(RegisterForm registerForm);
-
     User createUser(RegisterForm registerForm);
+
+    User updateProfile(ProfileForm profileForm);
+
+    void updatePassword();
 }

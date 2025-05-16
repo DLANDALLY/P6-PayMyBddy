@@ -1,8 +1,6 @@
 package com.paymybuddy.paymybuddy.config;
 
-import com.paymybuddy.paymybuddy.services.UserDetailsServiceImpl;
-import com.paymybuddy.paymybuddy.services.interfaces.IUser;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
@@ -33,7 +31,6 @@ public class SecurityConfig {
                 .build();
     }
 
-
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -47,7 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/error/**", "/login", "/register", "/registerRequest","/webjars/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -56,74 +53,21 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .permitAll()
-                )
+                        .permitAll())
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/profileGH", true))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .permitAll()
-                )
+                        .permitAll())
                 .sessionManagement(session -> session
                         .maximumSessions(1))
                 .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/errorpage"));
+                        .accessDeniedPage("/error/403"));
 
         return http.build();
     }
-
-    /**
-     * @Bean
-     *     InternalResourceViewResolver viewResolver() {
-     *         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-     *         viewResolver.setPrefix("/WEB-INF/views/");
-     *         viewResolver.setSuffix(".jsp");
-     *         return viewResolver;
-     *     }
-     */
-
-    /**
-     * @Bean
-     *     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-     *         http
-     *                 .authorizeHttpRequests(authz -> authz
-     *                         .requestMatchers("/", "/home", "/productList", "/shoppingCart", "/admin/login", "/css/**", "/js/**", "/images/**", "/errorpage", "/error")
-     *                         .permitAll()
-     *                         .requestMatchers("/admin/orderList", "/admin/order", "/admin/accountInfo", "/admin/logout", "/admin/index")
-     *                         .hasAnyRole("EMPLOYEE", "MANAGER")
-     *                         .requestMatchers("/admin/product", "/admin/**")
-     *                         .hasRole("MANAGER")
-     *                         .anyRequest()
-     *                         .authenticated()
-     *                 )
-     *                 .userDetailsService(userDetailsServiceImpl)
-     *                 .formLogin(form -> form
-     *                         .loginPage("/admin/login")
-     *                         .loginProcessingUrl("/j_spring_security_check")
-     *                         .defaultSuccessUrl("/admin/accountInfo", true)
-     *                         .failureUrl("/admin/login?error=true")
-     *                         .usernameParameter("email")
-     *                         .passwordParameter("password")
-     *                         .permitAll()
-     *                 )
-     *                 .logout(logout -> logout
-     *                         .logoutUrl("/admin/logout")
-     *                         .logoutSuccessUrl("/")
-     *                         .invalidateHttpSession(true)
-     *                         .clearAuthentication(true)
-     *                         .permitAll()
-     *                 )
-     *                 .sessionManagement(session -> session
-     *                         .maximumSessions(1)
-     *                 )
-     *                 .exceptionHandling(exception -> exception
-     *                         .accessDeniedPage("/errorpage")
-     *                 );
-     *
-     *         return http.build();
-     *     }
-     */
-
-
 }
