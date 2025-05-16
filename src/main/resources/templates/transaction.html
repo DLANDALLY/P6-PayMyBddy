@@ -13,9 +13,6 @@
 <!-- Header navigation -->
 <th:block th:insert="~{/_menu}"></th:block>
 
-<!-- titre page -->
-<h1 class="offset-5">Page Transfert ! </h1>
-
 <!-- Formulaire -->
 <div class="container" style="margin-top: 7%">
     <form th:action="@{/transaction}" th:object="${transactionForm}" method="post">
@@ -57,9 +54,6 @@
             </div>
             <div class="col-3">
                 <button type="submit" class="btn btn-primary">Payer</button>
-                <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Disabled popover">
-                    <button class="btn btn-primary" type="button" disabled>Disabled button</button>
-                </span>
             </div>
         </div>
         <div class="row" th:classappend="text-danger">
@@ -95,8 +89,8 @@
                 <td th:text="${transaction.description}"></td>
                 <td class="text-end"
                     th:classappend="${transaction.amount > 0} ? 'text-success' : 'text-danger'"
-                    th:text="${transaction.amount}"
-                ></td>
+                    th:text="${transaction.amount}">
+                </td>
             </tr>
             </tbody>
         </table>

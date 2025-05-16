@@ -12,8 +12,6 @@
 <!-- Header navigation -->
 <th:block th:insert="~{/_menu}"></th:block>
 
-<h1 class="offset-5">Page Profil !</h1>
-
 <div class="container" style="margin-top: 15%">
     <div class="divCentre"  style="justify-self: center; width: 600px">
         <form th:action="@{/updateprofile}" method="post" th:object="${profileForm}">
@@ -64,9 +62,7 @@
             </div>
             <div th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></div>
         </form>
-
     </div>
-
 </div>
 
 </body>
