@@ -20,33 +20,15 @@ import java.util.List;
 @RequestMapping("/relation")
 @AllArgsConstructor
 public class RelationController {
-
     private IUser userService;
-
-    @GetMapping("test")
-    public String showRelation(HttpSession session, Model model){
-        return "/relation";
-    }
-
-//    @PostMapping
-//    public String searchRelation(@RequestParam(value = "keyword", required = false) String keyword, Model model){
-//        List<User> users;
-//        if (keyword != null && !keyword.isBlank()) users = userService.searchByEmail(keyword);
-//        else users = userService.getAllUsers();
-//
-//        model.addAttribute("users", users);
-//        model.addAttribute("keyword", keyword);
-//        return "/relation";
-//    }
 
     @PostMapping
     public String searchRelation(@RequestParam(value = "keyword", required = false) String keyword,
-                                 Model model,
-                                 HttpSession session){
+                                 Model model, HttpSession session){
+        log.info("POST searchRealtion");
         User user = (User) session.getAttribute("user");
         List<User> users;
-        boolean addRelation = userService.AddNewRelation(user, keyword);
-        if (keyword != null && !keyword.isBlank()) users = userService.searchByEmail(keyword);
+        if (keyword != null) users = userService.searchByEmail(keyword);
         else users = userService.getAllUsers();
 
         model.addAttribute("users", users);
@@ -56,6 +38,7 @@ public class RelationController {
 
     @GetMapping
     public String searchUsers(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        log.info("GET search users");
         List<User> users = userService.getAllUsers();
 
         model.addAttribute("users", users);

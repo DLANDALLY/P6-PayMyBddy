@@ -15,15 +15,13 @@
 <div class="container" style="margin-top: 15%">
     <div class="divCentre"  style="justify-self: center; width: 600px">
         <form th:action="@{/updateprofile}" method="post" th:object="${profileForm}">
-            <input type="hidden"  th:field="*{id}">
             <div class="row mb-3">
                 <div class="col text-end" style="width: auto">Username</div>
                 <div class="col" style="width: auto">
                     <input class="form-control"
+                           id="firstname"
                            type="text"
                            aria-label="readonly input example"
-                           th:placeholder="${user.username}"
-                           name="username"
                            th:field="*{username}">
                 </div>
                 <div class="col"></div>

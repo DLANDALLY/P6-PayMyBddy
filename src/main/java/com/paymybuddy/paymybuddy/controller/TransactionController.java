@@ -35,7 +35,7 @@ public class TransactionController {
         log.debug("transaction");
         User user = (User) session.getAttribute("user");
 
-        List<TransactionDto> transactions = transactionService.getReceiverAndSenderTransaction(user);
+        List<TransactionDto> transactions = transactionService.getAllUserTransactions(user);
         Set<String> emails = userService.getConnectionEmails(user);
         session.setAttribute("emails", emails);
         session.setAttribute("transactions", transactions);
@@ -49,9 +49,11 @@ public class TransactionController {
     }
 
     @PostMapping
-    public String createTransaction(@Validated @ModelAttribute TransactionForm transactionForm,
+    public String submitTransaction(@Valid @ModelAttribute TransactionForm transactionForm,
                               BindingResult result, HttpSession session, Model model){
         User userSession= (User) session.getAttribute("user");
+        if (userSession == null) return "redirect:/login";
+
         log.debug("POST transaction");
         Set<String> emails = (Set<String>) session.getAttribute("emails");
         List<TransactionDto> transactions = (List<TransactionDto>) session.getAttribute("transactions");
@@ -59,14 +61,20 @@ public class TransactionController {
         if (result.hasErrors()) {
             model.addAttribute("emails", emails);
             model.addAttribute("transactions", transactions);
-            model.addAttribute("error", result.getFieldError()); // ne sert a rien ??
+            model.addAttribute("errors", result.getAllErrors());
             model.addAttribute("maxBalance", userSession.getBankAccount().getBalance());
-
             return "transaction";
         }
 
-        transactionService.getTransaction(userSession, transactionForm);
-
+        try{
+            transactionService.processTransaction(userSession, transactionForm);
+        }catch (RuntimeException re){
+            model.addAttribute("emails", emails);
+            model.addAttribute("transactions", transactions);
+            model.addAttribute("errorMessage", re.getMessage());
+            model.addAttribute("maxBalance", userSession.getBankAccount().getBalance());
+            return "transaction";
+        }
         return "redirect:/transaction";
     }
 }

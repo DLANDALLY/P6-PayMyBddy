@@ -29,7 +29,7 @@ public class UserServiceImpl implements IUser {
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("Email not found"));
     }
 
     @Override
@@ -72,27 +72,29 @@ public class UserServiceImpl implements IUser {
     }
 
     @Override
-    public User updateProfile(ProfileForm profileForm){
-        User userBD = getUserById(profileForm.getId());
+    public User updateProfile(ProfileForm profileForm, long id){
+        User userBD = getUserById(id);
 
-        if (Objects.equals(userBD.getUsername(), profileForm.getUsername()))
+        if (!Objects.equals(userBD.getUsername(), profileForm.getUsername()))
+            userBD.setUsername(profileForm.getUsername());
+        //throw new IllegalArgumentException("The new username must be different from the current one.");
+
+        if (!existsByEmail(profileForm.getEmail()))
+            userBD.setEmail(profileForm.getEmail());
+        //throw new IllegalArgumentException("A user with this email already exists.");
+
+        if (!passwordEncoder.matches(profileForm.getPassword(), userBD.getPassword()))
+            userBD.setPassword(passwordEncoder.encode(profileForm.getPassword()));
+        //throw new IllegalArgumentException("The new password must be different from the current one.");
+
+        ProfileForm userMapper = modelMapper.map(userBD, ProfileForm.class);
+        if (Objects.equals(userMapper, profileForm))
             throw new IllegalArgumentException("The new username must be different from the current one.");
-
-        if (existsByEmail(profileForm.getEmail()))
-            throw new IllegalArgumentException("A user with this email already exists.");
-
-        if (passwordEncoder.matches(profileForm.getPassword(), userBD.getPassword()))
-            throw new IllegalArgumentException("The new password must be different from the current one.");
-
-        userBD.setUsername(profileForm.getUsername());
-        userBD.setEmail(profileForm.getEmail());
-        userBD.setPassword(passwordEncoder.encode(profileForm.getPassword()));
 
         return userRepository.save(userBD);
     }
 
     //Ah supp
-    @Override
     public void updatePassword() {
         List<User> users = userRepository.findAll();
         users.stream()
@@ -118,17 +120,4 @@ public class UserServiceImpl implements IUser {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No one user is found by this "+ id));
     }
-
-    @Override
-    public boolean AddNewRelation(User user, String email) {
-        User userdb = getUserByEmail(email);
-        User userSession = getUserById(user.getId());
-
-        userSession.getConnections().add(userdb);
-        userRepository.save(userSession);
-        return false;
-    }
-
-    //TODO : Faut il que les users est mutuellement leurs email dans leur relation pour pouvoir s'envoyer de l'argent
-
 }

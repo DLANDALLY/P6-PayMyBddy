@@ -47,10 +47,12 @@
                     <div class="row">
                         <button type="submit" class="btn btn-lg btn-primary" style="color: white">se connecter</button>
                     </div>
-                    <div class="row">
+                    <div>
                         <p th:if="${error}" th:text="${error}" style="color: red;"></p>
                     </div>
-
+                    <div  class="row" th:if="${param.error}">
+                        <p style="color: red;">Invalid username or password!</p>
+                    </div>
             </form>
         </div>
     </div>

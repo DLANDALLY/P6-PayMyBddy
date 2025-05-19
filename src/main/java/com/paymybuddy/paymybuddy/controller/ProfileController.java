@@ -43,12 +43,11 @@ public class ProfileController {
         User user = userService.getUserByEmail(principal.getName());
         session.setAttribute("user", user);
 
-        System.out.println("GET ShowProfile id "+ user.getId());
         String message = (String) session.getAttribute("errorUpdate");
         if (message != null) model.addAttribute("errorMessage", message);
 
         model.addAttribute("user", user);
-        model.addAttribute("profileForm", new ProfileForm());
+        model.addAttribute("profileForm", new ProfileForm(user.getUsername(), user.getEmail()));
         return "profile";
     }
 
@@ -57,21 +56,15 @@ public class ProfileController {
                                            HttpSession session, Model model){
         log.info("Authentification Github ");
         Map<String, Object> attributes = authenticationToken.getPrincipal().getAttributes();
-        System.out.println("Attributes -> "+ authenticationToken );
-
-
         String username = (String) attributes.get("login");
-        System.out.println("pseudo -> " + username);
-
         String email = (String) attributes.get("email");
-        System.out.println("email -> "+ email );
 
-        User user = new User();
+        User user;
         if (email != null){
             user = userService.getUserByEmail(email);
             session.setAttribute("user", user);
             model.addAttribute("user", user);
-            model.addAttribute("profileForm", new ProfileForm());
+            model.addAttribute("profileForm", new ProfileForm(user.getUsername(),user.getEmail()));
             return "profile";
         }
 
@@ -83,11 +76,18 @@ public class ProfileController {
     public String setProfile(@Valid @ModelAttribute ProfileForm profileForm,
                              BindingResult result, Model model, HttpSession session){
         log.info("Update Profile");
-        if (result.hasErrors()) return "updateprofile";
-        try {
-            User user = userService.updateProfile(profileForm);
+        User user = (User) session.getAttribute("user");
+
+        if (result.hasErrors()) {
             model.addAttribute("user", user);
-            return "/profile";
+            return "profile";
+        }
+
+        try {
+            user = userService.updateProfile(profileForm, user.getId());
+            model.addAttribute("user", user);
+            //model.addAttribute() ## Message de confirmation que la MAJ a ete effectuer
+            return "profile";
 
         }catch (IllegalArgumentException iae){
             session.setAttribute("errorUpdate", iae.getMessage());

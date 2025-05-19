@@ -46,20 +46,20 @@ public class AuthController {
     }
 
     //Le login est gerer par spring security (a supp)
-    @PostMapping("/login")
-    public String handleLogin(@RequestParam String emailField,
-                              @RequestParam String passwordField,
-                              HttpSession session) {
-        log.info("Login attempt");
-        User user = userService.getUserByEmail(emailField);
-        if(user != null){
-            session.setAttribute("user", user);
-            return "redirect:/profile";
-        }
-
-        session.setAttribute("error", "Un probleme ses produit lors de la connection");
-        return "redirect:/profile";
-    }
+//    @PostMapping("/login")
+//    public String handleLogin(@RequestParam String emailField,
+//                              @RequestParam String passwordField,
+//                              HttpSession session) {
+//        log.info("Login attempt");
+//        User user = userService.getUserByEmail(emailField);
+//        if(user != null){
+//            session.setAttribute("user", user);
+//            return "redirect:/profile";
+//        }
+//
+//        session.setAttribute("error", "Un probleme ses produit lors de la connection");
+//        return "redirect:/profile";
+//    }
 
     /**
      * End point Registe
@@ -107,13 +107,6 @@ public class AuthController {
     public String logout(SessionStatus sessionStatus) {
         sessionStatus.setComplete();
         return "redirect:/login";
-    }
-
-    @GetMapping("/error")
-    public String errePage(HttpSession session, Model model){
-        //if (message != null) model.addAttribute("error", message);
-
-        return "/error";
     }
 
 }

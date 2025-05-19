@@ -16,15 +16,11 @@ public interface IUser {
 
     User getUserById(long id);
 
-    boolean AddNewRelation(User user, String keyword);
-
     boolean existsByEmail(String email);
 
     Set<String> getConnectionEmails(User user);
 
     User createUser(RegisterForm registerForm);
 
-    User updateProfile(ProfileForm profileForm);
-
-    void updatePassword();
+    User updateProfile(ProfileForm profileForm, long id);
 }
