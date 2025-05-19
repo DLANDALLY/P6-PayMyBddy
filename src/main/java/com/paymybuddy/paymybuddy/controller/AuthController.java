@@ -28,13 +28,11 @@ public class AuthController {
     private IUser userService;
     private IAuth authservice;
 
-    //TODO : BUG = Probleme de transf "calcule tax"
-    //TODO renommer toutes les methods
+    //TODO : FT = renommer toutes les methods
     //TODO : FT = Renommer les cles etrangere - ajouter les +
     //TODO : FT = redirige l'user lorsqu'il se trompe d'URL
     //TODO : FT = ajout message derreur GETMAPPING erreor
     //TODO : FT = ajouter un message de confirmation d'enregistrement
-    //TODO : FT = Ajouter la dependance de boostrap
     //TODO : BUG = lorsque je click sur valide le formulaire vide la page est rediriger
 
     /**
@@ -44,22 +42,6 @@ public class AuthController {
     public String loginForm() {
         return "login";
     }
-
-    //Le login est gerer par spring security (a supp)
-//    @PostMapping("/login")
-//    public String handleLogin(@RequestParam String emailField,
-//                              @RequestParam String passwordField,
-//                              HttpSession session) {
-//        log.info("Login attempt");
-//        User user = userService.getUserByEmail(emailField);
-//        if(user != null){
-//            session.setAttribute("user", user);
-//            return "redirect:/profile";
-//        }
-//
-//        session.setAttribute("error", "Un probleme ses produit lors de la connection");
-//        return "redirect:/profile";
-//    }
 
     /**
      * End point Registe

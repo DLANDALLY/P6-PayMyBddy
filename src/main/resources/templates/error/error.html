@@ -13,8 +13,16 @@
 <!-- Header navigation -->
 <th:block th:insert="~{/_menu}"></th:block>
 
-<h1 class="offset-5"   th:text="${error}" style="color:red"></h1>
+<h1 class="offset-5"   th:text="${error}" style="color:red; margin-top:10%"></h1>
 <span class="offset-5" style="color: red" >Une erreur ces produit</span>
+
+<div class="offset-5">
+    <p> Oups, une erreur s’est produite. Merci de vous reconnecter</p>
+    <p th:if="@{errorMessage}" th:text="@{errorMessage}"></p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" class="btn btn-light" value="Reconnectez vous">
+    </form>
+</div>
 
 </body>
 </html>

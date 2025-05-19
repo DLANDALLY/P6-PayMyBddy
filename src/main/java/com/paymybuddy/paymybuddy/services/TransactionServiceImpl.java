@@ -116,12 +116,24 @@ public class TransactionServiceImpl implements ITransaction {
             throw new IllegalStateException("Insufficient balance");
 
         updateBalances(sender, receiver, admin, form.getAmount(), tax);
+        createCustomersTransaction(sender, receiver, form);
+        createAdminTransaction(sender, admin, receiver, tax);
+    }
 
+    private void createCustomersTransaction(User sender, User receiver, TransactionForm form){
         Transaction transaction = new Transaction();
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setDescription(form.getDescription());
         transaction.setAmount(form.getAmount());
+        createTransaction(transaction);
+    }
+    private void createAdminTransaction(User sender, User admin, User receiver, double tax){
+        Transaction transaction = new Transaction();
+        transaction.setSender(sender);
+        transaction.setReceiver(admin);
+        transaction.setDescription(receiver.getUsername());
+        transaction.setAmount(tax);
         createTransaction(transaction);
     }
 

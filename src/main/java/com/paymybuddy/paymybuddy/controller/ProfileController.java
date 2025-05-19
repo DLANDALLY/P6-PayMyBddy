@@ -40,8 +40,16 @@ public class ProfileController {
     //TODO : a faire
     @GetMapping("/profile")
     public String showProfile(HttpSession session, Principal principal, Model model) {
-        User user = userService.getUserByEmail(principal.getName());
-        session.setAttribute("user", user);
+        log.info("GET show Profile");
+
+        User user;
+        if (session.getAttribute("user") != null) {
+            User userSession = (User) session.getAttribute("user");
+            user = userService.getUserByEmail(userSession.getEmail());}
+        else if (principal.getName() != null){
+            user = userService.getUserByEmail(principal.getName());
+            session.setAttribute("user", user);}
+        else return "redirect:/login";
 
         String message = (String) session.getAttribute("errorUpdate");
         if (message != null) model.addAttribute("errorMessage", message);
@@ -85,6 +93,8 @@ public class ProfileController {
 
         try {
             user = userService.updateProfile(profileForm, user.getId());
+            session.setAttribute("user", user);
+
             model.addAttribute("user", user);
             //model.addAttribute() ## Message de confirmation que la MAJ a ete effectuer
             return "profile";

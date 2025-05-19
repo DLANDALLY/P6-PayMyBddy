@@ -32,8 +32,9 @@ public class TransactionController {
 
     @GetMapping
     public String showTransactions(HttpSession session, Model model) {
-        log.debug("transaction");
+        log.info("GET Transaction");
         User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
 
         List<TransactionDto> transactions = transactionService.getAllUserTransactions(user);
         Set<String> emails = userService.getConnectionEmails(user);
