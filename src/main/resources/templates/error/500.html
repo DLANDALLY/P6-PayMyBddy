@@ -13,14 +13,12 @@
 
 <div class="offset-5" style="color: red; margin-top:10%">
     <h1>500 - Erreur interne du serveur</h1>
-    <p>Une erreur inattendue s'est produite. Veuillez réessayer plus tard</p>
-    <div class="offset-5">
-        <p> Oups, une erreur s’est produite. Merci de vous reconnecter</p>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" class="btn btn-light" value="Reconnectez vous">
-        </form>
-    </div>
+    <p> Oups, une erreur s’est produite. Merci de vous reconnecter</p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" class="btn btn-light" value="Reconnectez vous">
+    </form>
 </div>
+
 
 
 

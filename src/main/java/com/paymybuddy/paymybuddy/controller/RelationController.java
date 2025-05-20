@@ -1,17 +1,18 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.entities.User;
+import com.paymybuddy.paymybuddy.form.RelationForm;
+import com.paymybuddy.paymybuddy.services.interfaces.IRelation;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,29 +22,52 @@ import java.util.List;
 @AllArgsConstructor
 public class RelationController {
     private IUser userService;
+    private IRelation relationService;
 
     @PostMapping
-    public String searchRelation(@RequestParam(value = "keyword", required = false) String keyword,
+    public String searchRelation(@Valid @ModelAttribute RelationForm relationForm, BindingResult result,
                                  Model model, HttpSession session){
         log.info("POST searchRealtion");
         User user = (User) session.getAttribute("user");
-        List<User> users;
-        if (keyword != null) users = userService.searchByEmail(keyword);
-        else users = userService.getAllUsers();
+        if (user == null) return "redirect:/login";
 
+        if (result.hasErrors()){
+            getAllUsers(model, user.getId());
+            return "relation";
+        }
+
+        try{
+            userService.existsByEmail(relationForm.getEmail());
+            relationService.addNewRelation(user.getId(), relationForm.getEmail());
+
+            return "redirect:/transaction";
+        }catch (IllegalArgumentException iae){
+            getAllUsers(model, user.getId());
+            model.addAttribute("emailNotFound", iae.getMessage());
+
+            return "relation";
+        }
+    }
+
+    private void getAllUsers(Model model, long userId){
+        List<User> users = relationService.filterUsersWithoutConnection(userId); //AJouter contrainte
         model.addAttribute("users", users);
-        model.addAttribute("keyword", keyword);
-        return "redirect:/transaction";
     }
 
     @GetMapping
-    public String searchUsers(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+    public String searchUsers(@RequestParam(value = "keyword", required = false) String keyword, Model model, HttpSession session) {
         log.info("GET search users");
-        List<User> users = userService.getAllUsers();
+        User user = (User) session.getAttribute("user");
+        List<User> users = relationService.filterUsersWithoutConnection(user.getId());
 
         model.addAttribute("users", users);
         model.addAttribute("keyword", keyword);
-        return "/relation";
+        model.addAttribute("relationForm", new RelationForm());
+        return "relation";
+    }
+
+    private List<User> getAllUsers(){
+        return userService.getAllUsers();
     }
 
 

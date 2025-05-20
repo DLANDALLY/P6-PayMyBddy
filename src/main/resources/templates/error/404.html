@@ -10,16 +10,13 @@
 <body>
 
 <!-- Header navigation -->
+<th:block th:insert="~{/_menu}"></th:block>
 
 <div class="offset-5" style="color: red; margin-top:10%">
     <h1>Page non trouvée</h1>
     <p>Désolé, la page que vous cherchez n'existe pas.</p>
-    <div class="offset-5">
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" class="btn btn-light" value="Reconnectez vous">
-        </form>
-    </div>
 </div>
+
 
 </body>
 </html>

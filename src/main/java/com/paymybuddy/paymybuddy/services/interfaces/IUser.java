@@ -23,4 +23,6 @@ public interface IUser {
     User createUser(RegisterForm registerForm);
 
     User updateProfile(ProfileForm profileForm, long id);
+
+    User updateUserConnexion(User user, User newConnection);
 }

@@ -84,15 +84,15 @@ public class ProfileController {
     public String setProfile(@Valid @ModelAttribute ProfileForm profileForm,
                              BindingResult result, Model model, HttpSession session){
         log.info("Update Profile");
-        User user = (User) session.getAttribute("user");
+        User userSession = (User) session.getAttribute("user");
 
         if (result.hasErrors()) {
-            model.addAttribute("user", user);
+            model.addAttribute("user", userSession);
             return "profile";
         }
 
         try {
-            user = userService.updateProfile(profileForm, user.getId());
+            User user = userService.updateProfile(profileForm, userSession.getId());
             session.setAttribute("user", user);
 
             model.addAttribute("user", user);

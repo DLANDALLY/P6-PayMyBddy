@@ -50,16 +50,15 @@ public class UserServiceImpl implements IUser {
 
     @Override
     public User createUser(RegisterForm registerForm) {
-        System.out.println("CreatUser() form test "+ registerForm.getEmail());
-        User userDB = getUserByEmail(registerForm.getEmail());
-        if (userDB != null) throw new RuntimeException("This user already exist");
+        boolean existsByEmail = existsByEmail(registerForm.getEmail());
+        if (existsByEmail) throw new IllegalArgumentException("This user already exist");
 
         BankAccount bankAccount = BankAccount.builder()
                 .balance(100)
                 .active(true)
                 .build();
 
-        userDB = User.builder()
+        User user = User.builder()
                 .username(registerForm.getUsername())
                 .email(registerForm.getEmail())
                 .password(passwordEncoder.encode(registerForm.getPassword()))
@@ -67,8 +66,8 @@ public class UserServiceImpl implements IUser {
                 .roles(List.of(new AppRole("USER")))
                 .build();
 
-        userRepository.save(userDB);
-        return userDB;
+        userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -119,5 +118,11 @@ public class UserServiceImpl implements IUser {
     public User getUserById(long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No one user is found by this "+ id));
+    }
+
+    @Override
+    public User updateUserConnexion(User user, User newConnection){
+        Objects.requireNonNull(user).getConnections().add(newConnection);
+        return userRepository.save(user);
     }
 }

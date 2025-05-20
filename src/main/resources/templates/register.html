@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="input mb-3">
                     <input class="form-control"
-                           type="text"
+                           type="email"
                            value="Mail"
                            placeholder="adresse mail"
                            th:field="*{email}">
@@ -52,12 +52,13 @@
                 <button type="submit" class="btn btn-lg btn-primary" style="color: white">se connecter</button>
             </div>
             <div class="row" th:classappend="text-danger">
-                <div class="col-3">
+                <div class="col-6">
                     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                     <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
             </div>
+            <div class="row text-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
     </form>
 </div>

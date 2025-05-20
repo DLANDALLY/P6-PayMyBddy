@@ -46,7 +46,7 @@ public class TransactionController {
         model.addAttribute("transactionForm", new TransactionForm());
         model.addAttribute("user", user);
         model.addAttribute("maxBalance", user.getBankAccount().getBalance());
-        return "transaction";
+        return "/transaction";
     }
 
     @PostMapping

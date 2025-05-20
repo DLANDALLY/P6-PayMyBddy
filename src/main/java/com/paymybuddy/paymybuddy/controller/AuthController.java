@@ -29,11 +29,10 @@ public class AuthController {
     private IAuth authservice;
 
     //TODO : FT = renommer toutes les methods
-    //TODO : FT = Renommer les cles etrangere - ajouter les +
-    //TODO : FT = redirige l'user lorsqu'il se trompe d'URL
-    //TODO : FT = ajout message derreur GETMAPPING erreor
+    //TODO : FT = Renommer les cles etrangere - ajouter les + (fichier init.sql)
+
     //TODO : FT = ajouter un message de confirmation d'enregistrement
-    //TODO : BUG = lorsque je click sur valide le formulaire vide la page est rediriger
+    //TODO : FT = Ajouter un try catch a tout les endpoints
 
     /**
      * Enpoint Login
@@ -70,16 +69,17 @@ public class AuthController {
     public String handleRegister(@Validated @ModelAttribute RegisterForm registerForm,
                                  BindingResult result, HttpSession session, Model model) {
         log.info("Register attempt");
-        if (result.hasErrors()) return "/registerRequest";
+        if (result.hasErrors()) return "register";
 
-        //Creer un user et un compte
-        User user = authservice.addNewUser(registerForm);
-        if (user == null) {
-            model.addAttribute("error", "Un probleme est survenu");
-            return "/registerRequest";}
+        try {
+            User user = authservice.addNewUser(registerForm);
+            session.setAttribute("user", user);
 
-        session.setAttribute("user", user);
-        return "redirect:/profile";
+            return "redirect:/profile";
+        }catch (RuntimeException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register";
+        }
     }
 
     /**
@@ -90,5 +90,4 @@ public class AuthController {
         sessionStatus.setComplete();
         return "redirect:/login";
     }
-
 }

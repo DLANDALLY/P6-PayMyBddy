@@ -15,11 +15,9 @@
 <div class="offset-5" style="color: red; margin-top:10%">
     <h1>Accès refusé</h1>
     <p>Vous n'avez pas les droits pour accéder à cette page</p>
-    <div class="offset-5">
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" class="btn btn-light" value="Reconnectez vous">
-        </form>
-    </div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" class="btn btn-light" value="Reconnectez vous">
+    </form>
 </div>
 
 
