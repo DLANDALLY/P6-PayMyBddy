@@ -12,17 +12,15 @@ public interface IUser {
 
     List<User> getAllUsers();
 
-    List<User> searchByEmail(String keyword);
-
     User getUserById(long id);
 
     boolean existsByEmail(String email);
 
-    Set<String> getConnectionEmails(User user);
+    Set<String> getConnectionEmails(long userId);
 
     User createUser(RegisterForm registerForm);
 
     User updateProfile(ProfileForm profileForm, long id);
 
-    User updateUserConnexion(User user, User newConnection);
+    void updateUserConnexion(User user, User newConnection);
 }

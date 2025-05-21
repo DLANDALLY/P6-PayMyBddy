@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,12 +48,6 @@ public class RelationController {
         }
     }
 
-    private void getAllUsers(Model model, long userId){
-        List<User> users = relationService.filterUsersWithoutConnection(userId);
-        System.out.println("## RelationCo getall : " + users.size());
-        model.addAttribute("users", users);
-    }
-
     @GetMapping
     public String searchUsers(Model model, HttpSession session) {
         log.info("GET search users");
@@ -66,9 +59,8 @@ public class RelationController {
         return "relation";
     }
 
-    private List<User> getAllUsers(){
-        return userService.getAllUsers();
+    private void getAllUsers(Model model, long userId){
+        List<User> users = relationService.filterUsersWithoutConnection(userId);
+        model.addAttribute("users", users);
     }
-
-
 }

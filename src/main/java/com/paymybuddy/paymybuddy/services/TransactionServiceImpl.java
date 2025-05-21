@@ -8,6 +8,7 @@ import com.paymybuddy.paymybuddy.repositories.TransactionRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.IBankAccount;
 import com.paymybuddy.paymybuddy.services.interfaces.ITransaction;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,20 +26,20 @@ public class TransactionServiceImpl implements ITransaction {
     private TransactionRepository transactionRepository;
     private IBankAccount bankAccountService;
     private IUser userService;
-    private ModelMapper modelMapper;
-
 
     @Override
     public List<TransactionDto> getAllUserTransactions(User user) {
+        if (user == null)
+            throw new IllegalArgumentException("User must not be null");
+
         User userBD = userService.getUserByEmail(user.getEmail());
+        List<Transaction> sentTransactions = getTransactionBySender(userBD);
+        List<Transaction> receivedTransactions = getTransactionByReceiver(userBD);
 
-        List<Transaction> senders = getTransactionBySender(userBD);
-        List<Transaction> receiver = getTransactionByReceiver(userBD);
-        senders.forEach(t -> t.setAmount(-Math.abs(t.getAmount())));
+        sentTransactions.forEach(t -> t.setAmount(-Math.abs(t.getAmount())));
+        List<Transaction> allTransactions = mergeAndSortTransactions(sentTransactions, receivedTransactions);
 
-        List<Transaction> transactions = mergeAndSortTransactions(senders, receiver);
-
-        return convertToDto(transactions, userBD);
+        return convertToDto(allTransactions, userBD);
     }
 
     private List<Transaction> getTransactionBySender(User user){
@@ -76,26 +77,6 @@ public class TransactionServiceImpl implements ITransaction {
         return transactions;
     }
 
-
-
-    /**
-     * pour faire une transaction
-     * - le compte du UserSender
-     * - le compte du UserReceiver
-     *
-     * condition : Verifier que le UserSender à le montant annoncé
-     *
-     * soustraire le prix du compte UserSender
-     * addition le prix du compte UserReceiver
-     *
-     * (method de la class BankService)
-     * update le compte UserSender
-     * update le compte UserReceiver
-     *
-     * Ajouter la transaction dans la base de donnée
-     * create - createTransaction(idSender, idReceiver, amount, description)
-     * add(new Transaction)
-     */
     @Transactional
     @Override
     public void processTransaction(User session, TransactionForm form){

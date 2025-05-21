@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="row" th:classappend="text-danger">
-                <div class="col-3">
+                <div class="col-4">
                     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                     <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
@@ -60,6 +60,18 @@
             </div>
             <div th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></div>
         </form>
+        <!-- Message de confirmation update -->
+        <div id="success-message" class="alert alert-success text-center" role="alert"
+             th:if="${successMessage}" th:text="${successMessage}">
+        </div>
+        <script>
+            setTimeout(() => {
+                const alert = document.getElementById('success-message');
+                if (alert) {
+                    alert.style.display = 'none';
+                }
+            }, 3000); // 3 secondes
+        </script>
     </div>
 </div>
 

@@ -38,15 +38,12 @@ public class UserServiceImpl implements IUser {
     }
 
     @Override
-    public Set<String> getConnectionEmails(User userSession) {
-        User user = userRepository.findById(userSession.getId()).orElse(null);
-        assert user != null;
-
+    public Set<String> getConnectionEmails(long userId) {
+        User user = getUserById(userId);
         return user.getConnections().stream()
                 .map(User::getEmail)
                 .collect(Collectors.toSet());
     }
-
 
     @Override
     public User createUser(RegisterForm registerForm) {
@@ -76,21 +73,33 @@ public class UserServiceImpl implements IUser {
 
         if (!Objects.equals(userBD.getUsername(), profileForm.getUsername()))
             userBD.setUsername(profileForm.getUsername());
-        //throw new IllegalArgumentException("The new username must be different from the current one.");
-
         if (!existsByEmail(profileForm.getEmail()))
             userBD.setEmail(profileForm.getEmail());
-        //throw new IllegalArgumentException("A user with this email already exists.");
-
         if (!passwordEncoder.matches(profileForm.getPassword(), userBD.getPassword()))
             userBD.setPassword(passwordEncoder.encode(profileForm.getPassword()));
-        //throw new IllegalArgumentException("The new password must be different from the current one.");
 
         ProfileForm userMapper = modelMapper.map(userBD, ProfileForm.class);
         if (Objects.equals(userMapper, profileForm))
-            throw new IllegalArgumentException("The new username must be different from the current one.");
+            throw new IllegalArgumentException("The new username must be different from the current one");
 
         return userRepository.save(userBD);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No one user is found by this "+ id));
+    }
+
+    @Override
+    public void updateUserConnexion(User user, User newConnection){
+        Objects.requireNonNull(user).getConnections().add(newConnection);
+        userRepository.save(user);
     }
 
     //Ah supp
@@ -102,27 +111,5 @@ public class UserServiceImpl implements IUser {
                     return u;})
                 .toList();
         userRepository.saveAll(users);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public List<User> searchByEmail(String keyword) {
-        return userRepository.findByEmailContainingIgnoreCase(keyword);
-    }
-
-    @Override
-    public User getUserById(long id){
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No one user is found by this "+ id));
-    }
-
-    @Override
-    public User updateUserConnexion(User user, User newConnection){
-        Objects.requireNonNull(user).getConnections().add(newConnection);
-        return userRepository.save(user);
     }
 }

@@ -2,15 +2,9 @@ package com.paymybuddy.paymybuddy;
 
 import com.paymybuddy.paymybuddy.form.RegisterForm;
 import com.paymybuddy.paymybuddy.services.AuthService;
-import com.paymybuddy.paymybuddy.services.UserDetailsServiceImpl;
-import com.paymybuddy.paymybuddy.services.interfaces.IUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class PaymybuddyApplication {

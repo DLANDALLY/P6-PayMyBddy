@@ -1,17 +1,18 @@
 package com.paymybuddy.paymybuddy.form;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Setter
 public class TransactionForm {
-    @NotBlank(message = "Email is required")
     @Email(message = "Please enter a valid email")
+    @Length(max = 50, message = "Email not conform")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Email format is invalid")
     private String email;
 
     @NotBlank(message = "The description is required")

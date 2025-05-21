@@ -4,30 +4,17 @@ import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.form.ProfileForm;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.http.HttpHeaders;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -38,7 +25,7 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String showProfile(HttpSession session, Principal principal, Model model) {
-        log.info("GET show Profile");
+        log.info("GET Profile");
 
         User user;
         if (session.getAttribute("user") != null) {
@@ -50,10 +37,10 @@ public class ProfileController {
         else return "redirect:/login";
 
         String message = (String) session.getAttribute("errorUpdate");
-        if (message != null) model.addAttribute("errorMessage", message);
+        if (message != null)
+            model.addAttribute("errorMessage", message);
 
-        model.addAttribute("user", user);
-        model.addAttribute("profileForm", new ProfileForm(user.getUsername(), user.getEmail()));
+        prepareUserProfileModel(model, user);
         return "profile";
     }
 
@@ -69,8 +56,7 @@ public class ProfileController {
         if (email != null){
             user = userService.getUserByEmail(email);
             session.setAttribute("user", user);
-            model.addAttribute("user", user);
-            model.addAttribute("profileForm", new ProfileForm(user.getUsername(),user.getEmail()));
+            prepareUserProfileModel(model, user);
             return "profile";
         }
 
@@ -78,8 +64,13 @@ public class ProfileController {
         return "redirect:/register";
     }
 
+    private void prepareUserProfileModel(Model model, User user){
+        model.addAttribute("user", user);
+        model.addAttribute("profileForm", new ProfileForm(user.getUsername(),user.getEmail()));
+    }
+
     @PostMapping("/updateprofile")
-    public String setProfile(@Valid @ModelAttribute ProfileForm profileForm,
+    public String setProfile(@Validated @ModelAttribute ProfileForm profileForm,
                              BindingResult result, Model model, HttpSession session){
         log.info("Update Profile");
         User userSession = (User) session.getAttribute("user");
@@ -94,21 +85,12 @@ public class ProfileController {
             session.setAttribute("user", user);
 
             model.addAttribute("user", user);
-            //model.addAttribute() ## Message de confirmation que la MAJ a ete effectuer
+            model.addAttribute("successMessage", "Profile updated successfully");
             return "profile";
 
         }catch (IllegalArgumentException iae){
             session.setAttribute("errorUpdate", iae.getMessage());
             return "redirect:/profile";
         }
-    }
-
-
-    //TODO : à faire
-    @GetMapping("/addbuddy")
-    public String addBuddy(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "relation";
     }
 }

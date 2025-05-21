@@ -59,6 +59,4 @@ public class User {
     public User() {
         this.createdAt = LocalDateTime.now();
     }
-
-    // Getters, setters, equals, hashCode (important pour les Set)...
 }

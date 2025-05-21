@@ -25,8 +25,7 @@ public class RelationServiceImpl implements IRelation {
 
         boolean isConnexion = userBD.getConnections().contains(newPerson);
         if (isConnexion) throw new IllegalArgumentException("Users are already connected");
-        if (userBD.getEmail().equals(newPerson.getEmail()))
-            throw new IllegalArgumentException("You cannot add yourself");
+        if (userBD.getEmail().equals(newPerson.getEmail())) throw new IllegalArgumentException("You cannot add yourself");
 
         userService.updateUserConnexion(userBD, newPerson);
     }
@@ -39,24 +38,4 @@ public class RelationServiceImpl implements IRelation {
                 .filter(user -> !connectedUsers.contains(user) && user.getId() != userId)
                 .collect(Collectors.toList());
     }
-
-//    @Override
-//    public List<User> filterUsersWithoutConnection(long userId){
-//        System.out.println("## FilterUser ##");
-//
-//        List<User> allUsers = userService.getAllUsers();
-//        System.out.println("## Liste allUser :");
-//        allUsers.forEach(System.out::println);
-//
-//        System.out.println("## list connect :");
-//        Set<User> connectedUsers = userService.getUserById(userId).getConnections();
-//        connectedUsers.forEach(System.out::println);
-//
-//        System.out.println("## list remove :");
-//        allUsers.removeAll(connectedUsers);
-//        allUsers.forEach(System.out::println);
-//
-//        return  allUsers;
-//    }
-
 }

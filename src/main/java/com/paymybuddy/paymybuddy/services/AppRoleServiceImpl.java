@@ -6,8 +6,6 @@ import com.paymybuddy.paymybuddy.services.interfaces.IAppRole;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
 public class AppRoleServiceImpl implements IAppRole {
@@ -21,12 +19,16 @@ public class AppRoleServiceImpl implements IAppRole {
 
     @Override
     public AppRole createRole(String role) {
-        AppRole appRole = getRoleById(role);
-        if(appRole != null) throw new RuntimeException("This role already exist");
+        if (role == null || role.isBlank()) {
+            throw new IllegalArgumentException("Role name must not be null or blank");
+        }
 
-        appRole = AppRole.builder().role(role).build();
-        appRoleRepository.save(appRole);
+        AppRole existingRole = getRoleById(role);
+        if (existingRole != null) {
+            throw new RuntimeException("This role already exists");
+        }
 
-        return appRole;
+        AppRole newRole = AppRole.builder().role(role).build();
+        return appRoleRepository.save(newRole);
     }
 }
