@@ -50,18 +50,18 @@ public class RelationController {
     }
 
     private void getAllUsers(Model model, long userId){
-        List<User> users = relationService.filterUsersWithoutConnection(userId); //AJouter contrainte
+        List<User> users = relationService.filterUsersWithoutConnection(userId);
+        System.out.println("## RelationCo getall : " + users.size());
         model.addAttribute("users", users);
     }
 
     @GetMapping
-    public String searchUsers(@RequestParam(value = "keyword", required = false) String keyword, Model model, HttpSession session) {
+    public String searchUsers(Model model, HttpSession session) {
         log.info("GET search users");
         User user = (User) session.getAttribute("user");
-        List<User> users = relationService.filterUsersWithoutConnection(user.getId());
+        if (user == null) return "redirect:/login";
 
-        model.addAttribute("users", users);
-        model.addAttribute("keyword", keyword);
+        getAllUsers(model, user.getId());
         model.addAttribute("relationForm", new RelationForm());
         return "relation";
     }

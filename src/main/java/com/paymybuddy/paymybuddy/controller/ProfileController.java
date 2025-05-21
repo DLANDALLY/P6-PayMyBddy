@@ -35,9 +35,7 @@ import java.util.Map;
 @Controller
 public class ProfileController {
     private IUser userService;
-    private OAuth2AuthorizedClientService clientService;
 
-    //TODO : a faire
     @GetMapping("/profile")
     public String showProfile(HttpSession session, Principal principal, Model model) {
         log.info("GET show Profile");

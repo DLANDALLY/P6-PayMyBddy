@@ -33,6 +33,7 @@ public class AuthController {
 
     //TODO : FT = ajouter un message de confirmation d'enregistrement
     //TODO : FT = Ajouter un try catch a tout les endpoints
+    //TODO : FT = Ajout de message d'erreur dans le cas ou l'utilisateur senvoi de l'argent a lui meme ou le retirer de la liste
 
     /**
      * Enpoint Login
@@ -73,6 +74,8 @@ public class AuthController {
 
         try {
             User user = authservice.addNewUser(registerForm);
+            System.out.println("## Register username "+ user.getUsername());
+            System.out.println("## Register username "+ user.getEmail());
             session.setAttribute("user", user);
 
             return "redirect:/profile";
