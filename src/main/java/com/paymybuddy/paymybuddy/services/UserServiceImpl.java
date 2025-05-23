@@ -8,7 +8,6 @@ import com.paymybuddy.paymybuddy.form.RegisterForm;
 import com.paymybuddy.paymybuddy.repositories.UserRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements IUser {
@@ -102,14 +100,14 @@ public class UserServiceImpl implements IUser {
         userRepository.save(user);
     }
 
-    //Ah supp
-    public void updatePassword() {
-        List<User> users = userRepository.findAll();
-        users.stream()
-                .map(u -> {
-                    u.setPassword(passwordEncoder.encode("pass1234"));
-                    return u;})
-                .toList();
-        userRepository.saveAll(users);
-    }
+//    @Override
+//    public void updatePassword() {
+//        List<User> users = userRepository.findAll();
+//        users.stream()
+//                .map(u -> {
+//                    u.setPassword(passwordEncoder.encode("pass1234"));
+//                    return u;})
+//                .toList();
+//        userRepository.saveAll(users);
+//    }
 }

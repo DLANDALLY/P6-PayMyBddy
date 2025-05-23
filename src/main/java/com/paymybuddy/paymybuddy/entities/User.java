@@ -41,8 +41,7 @@ public class User {
     @JoinTable(
             name = "user_connections",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "connection_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "connection_id"))
     private Set<User> connections = new HashSet<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true )

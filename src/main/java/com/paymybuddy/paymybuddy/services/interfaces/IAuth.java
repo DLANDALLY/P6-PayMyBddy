@@ -7,7 +7,7 @@ import com.paymybuddy.paymybuddy.form.RegisterForm;
 public interface IAuth {
     User addNewUser(RegisterForm registerForm);
 
-    AppRole addNewRole(String role);
+    //AppRole addNewRole(String role);
 
-    void addRoleToUser(String email, String role);
+    //void addRoleToUser(String email, String role);
 }

@@ -1,16 +1,19 @@
 package com.paymybuddy.paymybuddy.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@Entity
 public class AppRole {
     @Id
     private String role;
+
+    public AppRole(String role) {
+        this.role = role;
+    }
 }

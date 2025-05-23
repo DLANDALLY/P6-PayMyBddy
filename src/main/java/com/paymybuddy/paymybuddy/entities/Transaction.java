@@ -18,12 +18,12 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotNull
-    //@Column(precision = 10, scale = 2, nullable = false)
     private Double amount;
 
+    @Column(length = 255)
     private String description;
-    private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
@@ -32,6 +32,8 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
+
+    private LocalDateTime date;
 
     public Transaction() {
         this.date = LocalDateTime.now();

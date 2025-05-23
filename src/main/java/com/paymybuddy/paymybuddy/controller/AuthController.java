@@ -20,13 +20,7 @@ import java.util.Map;
 @Controller
 @AllArgsConstructor
 public class AuthController {
-    private IAuth authservice;
-
-    //TODO : FT = renommer toutes les methods
-    //TODO : FT = Renommer les cles etrangere - ajouter les + (fichier init.sql)
-
-    //TODO : FT = ajouter un message de confirmation d'enregistrement
-    //TODO : FT = Ajouter un try catch a tout les endpoints
+    private IAuth authService;
 
     /**
      * Enpoint Login
@@ -68,7 +62,7 @@ public class AuthController {
         if (result.hasErrors()) return "register";
 
         try {
-            User user = authservice.addNewUser(registerForm);
+            User user = authService.addNewUser(registerForm);
             session.setAttribute("user", user);
             return "redirect:/profile";
         }catch (RuntimeException e){

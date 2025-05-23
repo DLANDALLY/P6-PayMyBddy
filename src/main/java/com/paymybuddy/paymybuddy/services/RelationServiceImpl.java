@@ -17,15 +17,19 @@ public class RelationServiceImpl implements IRelation {
 
     @Override
     public void addNewRelation(long id, String email){
-        if (id == 0) throw new IllegalArgumentException("ID does not exist");
+        if (id == 0)
+            throw new IllegalArgumentException("ID does not exist");
         User userBD = userService.getUserById(id);
 
-        if (email.isBlank()) throw new IllegalArgumentException("Email parameter is missing");
+        if (email.isBlank())
+            throw new IllegalArgumentException("Email parameter is missing");
         User newPerson = userService.getUserByEmail(email);
 
         boolean isConnexion = userBD.getConnections().contains(newPerson);
-        if (isConnexion) throw new IllegalArgumentException("Users are already connected");
-        if (userBD.getEmail().equals(newPerson.getEmail())) throw new IllegalArgumentException("You cannot add yourself");
+        if (isConnexion)
+            throw new IllegalArgumentException("Users are already connected");
+        if (userBD.getEmail().equals(newPerson.getEmail()))
+            throw new IllegalArgumentException("You cannot add yourself");
 
         userService.updateUserConnexion(userBD, newPerson);
     }
@@ -35,7 +39,9 @@ public class RelationServiceImpl implements IRelation {
         Set<User> connectedUsers = userService.getUserById(userId).getConnections();
 
         return userService.getAllUsers().stream()
-                .filter(user -> !connectedUsers.contains(user) && user.getId() != userId)
+                .filter(user ->
+                        !connectedUsers.contains(user) &&
+                        user.getId() != userId)
                 .collect(Collectors.toList());
     }
 }
