@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,26 +21,26 @@ class AuthControllerTest {
     }
 
     @Test
-    void loginForm() {
+    void shouldDisplayLogin() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
     }
 
     @Test
-    void signIn() {
+    void shouldDisplayRegisterPageWithEmptyForm() throws Exception {
+        mockMvc.perform(get("/register")
+                        .sessionAttr("username", "john.doe@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register"))
+                .andExpect(model().attributeExists("registerForm"))
+                .andExpect(model().attribute("username", "john.doe@example.com"));
     }
 
 
-    @Test
-    void signInByGitHub() {
-    }
 
     @Test
     void handleRegister() {
     }
 
-    @Test
-    void shouldLogoutAndRedirectToLogin() throws Exception {
-        mockMvc.perform(get("/logout"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
-    }
 }

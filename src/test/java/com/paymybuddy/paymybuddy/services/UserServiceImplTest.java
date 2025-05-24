@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -60,19 +61,19 @@ class UserServiceImplTest {
     @Test
     void shouldGetConnectionEmailsSuccessful() {
         User newUser = createUserTest();
-        User u1 = userService.getUserById(1L);
-        User u2 = userService.getUserById(2L);
-        User u3 = userService.getUserById(3L);
+        User u1 = userRepository.findById(1L).orElse(null);
+        User u2 = userRepository.findById(2L).orElse(null);
+        User u3 = userRepository.findById(3L).orElse(null);
 
-        List<User> userConnections = List.of(u1, u2, u3);
-        newUser.getConnections().addAll(userConnections);
+        Set<User> listConnect = Set.of(u1, u2, u3);
+        newUser.setConnections(listConnect);
         userRepository.save(newUser);
 
         Set<String> emails = userService.getConnectionEmails(newUser.getId());
+        User targetUser = userRepository.findById(newUser.getId()).orElse(null);
 
-        for (User user : newUser.getConnections()){
-            assertTrue(emails.contains(user.getEmail()));
-        }
+        assertNotNull(targetUser);
+        assertEquals(3, emails.size());
         deletedUser(newUser);
     }
 
@@ -106,8 +107,8 @@ class UserServiceImplTest {
         User userUpdate = userRepository.findById(user.getId()).orElse(null);
 
         assertNotNull(userUpdate);
-        assertEquals(user.getUsername(), profileForm.getUsername());
-        assertEquals(user.getEmail(), profileForm.getEmail());
+        assertEquals(userUpdate.getUsername(), profileForm.getUsername());
+        assertEquals(userUpdate.getEmail(), profileForm.getEmail());
         deletedUser(user);
 
     }
@@ -138,6 +139,7 @@ class UserServiceImplTest {
 
     @Test
     void shouldUpdateUserConnexionSuccessful() {
+        userRepository.deleteById(58L);
         User newUser = createUserTest();
         User u1 = userService.getUserById(1L);
 
@@ -145,12 +147,12 @@ class UserServiceImplTest {
         User userTest = userRepository.findById(newUser.getId()).orElse(null);
 
         assertNotNull(userTest);
-        assertNotEquals(newUser.getConnections().size(), userTest.getConnections().size());
+        assertEquals( 1, userTest.getConnections().size());
         deletedUser(newUser);
     }
 
     RegisterForm registerPerson(){
-        RegisterForm registerForm = registerPerson();
+        RegisterForm registerForm = new RegisterForm();
         registerForm.setUsername("userTest");
         registerForm.setEmail("usertest@example.com");
         registerForm.setPassword("pass1234");

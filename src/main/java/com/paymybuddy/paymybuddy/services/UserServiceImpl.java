@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class UserServiceImpl implements IUser {
                 .email(registerForm.getEmail())
                 .password(passwordEncoder.encode(registerForm.getPassword()))
                 .bankAccount(bankAccount)
+                .createdAt(LocalDateTime.now())
                 .roles(List.of(new AppRole("USER")))
                 .build();
 
@@ -96,7 +98,9 @@ public class UserServiceImpl implements IUser {
 
     @Override
     public void updateUserConnexion(User user, User newConnection){
-        Objects.requireNonNull(user).getConnections().add(newConnection);
+        //Objects.requireNonNull(user).getConnections().add(newConnection);
+        Set<User> listUser= Set.of(newConnection);
+        Objects.requireNonNull(user).setConnections(listUser);
         userRepository.save(user);
     }
 

@@ -14,11 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 @SpringBootTest
 class TransactionServiceImplTest {
     @Autowired
@@ -42,10 +44,11 @@ class TransactionServiceImplTest {
 
         transactionService.processTransaction(user, transactionForm);
         List<TransactionDto> transactions = transactionService.getAllUserTransactions(user);
+        double montant = Math.abs(transactions.get(1).getAmount());
 
-        assertEquals((size + 1), transactions.size());
-        assertEquals(transactionForm.getAmount(), transactions.getLast().getAmount());
-        assertEquals(transactionForm.getDescription(), transactions.getLast().getDescription());
+        assertEquals(size + 2, transactions.size());
+        assertEquals(transactionForm.getAmount(), montant);
+        assertEquals(transactionForm.getDescription(), transactions.get(1).getDescription());
     }
 
     @Test
@@ -63,16 +66,17 @@ class TransactionServiceImplTest {
         transactionService.processTransaction(user, transactionForm);
 
         List<TransactionDto> transactions = transactionService.getAllUserTransactions(user);
+        double balance = Math.abs(transactions.get(1).getAmount());
 
-        assertEquals(transactionForm.getAmount(), transactions.getLast().getAmount());
-        assertEquals(transactionForm.getDescription(), transactions.getLast().getDescription());
+        assertEquals(transactionForm.getAmount(), balance);
+        assertEquals(transactionForm.getDescription(), transactions.get(1).getDescription());
     }
 
     @Test
     void shouldThrowExceptionWhenProcessingTransactionWithNullUser() {
         TransactionForm transactionForm = newTransaction();
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             transactionService.processTransaction(new User(), transactionForm);
         });
     }

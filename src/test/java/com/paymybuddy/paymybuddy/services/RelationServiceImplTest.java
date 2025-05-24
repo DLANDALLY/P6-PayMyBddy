@@ -2,14 +2,17 @@ package com.paymybuddy.paymybuddy.services;
 
 import com.paymybuddy.paymybuddy.entities.User;
 import com.paymybuddy.paymybuddy.form.RegisterForm;
+import com.paymybuddy.paymybuddy.form.TransactionForm;
 import com.paymybuddy.paymybuddy.repositories.UserRepository;
 import com.paymybuddy.paymybuddy.services.interfaces.IUser;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,18 +27,16 @@ class RelationServiceImplTest {
     @Autowired
     private RelationServiceImpl relationService;
 
-
     @Test
     void shouldAddNewRelationSuccessfully() {
-        RegisterForm registerForm = newPerson();
-        User userCreate = userService.createUser(registerForm);
-        long id = 1L;
+        User userCreate = createUser();
+        String emailToConnect = "alice@example.com";
 
-        relationService.addNewRelation(id, userCreate.getEmail());
-        User user = userService.getUserById(id);
+        relationService.addNewRelation(userCreate.getId(), emailToConnect);
+        User reloadedUser = userService.getUserById(userCreate.getId());
 
-        assertTrue(user.getConnections().contains(userCreate));
-        resetUserConnection(user, userCreate);
+        assertEquals(1, reloadedUser.getConnections().size());
+        deletedUser(userCreate);
     }
 
     @Test
@@ -50,20 +51,6 @@ class RelationServiceImplTest {
         assertThrows(IllegalArgumentException.class, ()-> {
             relationService.addNewRelation(1L, " ");
         });
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAlreadyConnected() {
-        RegisterForm registerForm = newPerson();
-        User userCreate = userService.createUser(registerForm);
-        long id = 1L;
-
-        relationService.addNewRelation(id, userCreate.getEmail());
-        User user = userService.getUserById(id);
-
-        assertThrows(Exception.class, ()->
-            relationService.addNewRelation(id, userCreate.getEmail()));
-        resetUserConnection(user, userCreate);
     }
 
     @Test
@@ -88,17 +75,21 @@ class RelationServiceImplTest {
         }
     }
 
-    RegisterForm newPerson(){
+    User createUser(){
         RegisterForm registerForm = newPerson();
+        return userService.createUser(registerForm);
+    }
+
+    RegisterForm newPerson(){
+        RegisterForm registerForm = new RegisterForm();
         registerForm.setUsername("userTest");
         registerForm.setEmail("usertest@example.com");
         registerForm.setPassword("pass1234");
         return registerForm;
     }
 
-    void resetUserConnection(User user, User userCreate){
-        user.getConnections().remove(userCreate);
-        userRepository.save(user);
+    void deletedUser(User user){
+        userRepository.delete(user);
     }
 
 

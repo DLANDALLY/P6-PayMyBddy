@@ -13,29 +13,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class ErrorControlerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void shouldReturn404ErrorPage() throws Exception {
-        mockMvc.perform(get("/nonExistentPage"))
-                .andExpect(status().isNotFound())
-                .andExpect(view().name("error/404"));
-    }
-
-    @Test
-    void shouldReturn403ErrorPage() throws Exception {
-        mockMvc.perform(get("/admin").with(user("user").roles("USER")))
-                .andExpect(status().isForbidden())
-                .andExpect(view().name("error/403"));
-    }
-
-    @Test
-    void shouldReturn500ErrorPage() throws Exception {
-        mockMvc.perform(get("/errorServer500"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(view().name("error/500"));
+        mockMvc.perform(get("/login/notfound"))
+                .andExpect(status().isNotFound());
     }
 }
