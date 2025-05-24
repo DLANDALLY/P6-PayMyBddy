@@ -37,8 +37,7 @@ public class User {
     @JoinColumn(name = "bankAccount_id")
     private BankAccount bankAccount;
 
-    //@ManyToMany
-    @ManyToMany(fetch = FetchType.EAGER)// UNIQUEMENT POUR LES TESTS
+    @ManyToMany//(fetch = FetchType.EAGER)// UNIQUEMENT POUR LES TESTS
     @JoinTable(
             name = "user_connections",
             joinColumns = @JoinColumn(name = "user_id"),

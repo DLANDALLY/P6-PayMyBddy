@@ -98,9 +98,7 @@ public class UserServiceImpl implements IUser {
 
     @Override
     public void updateUserConnexion(User user, User newConnection){
-        //Objects.requireNonNull(user).getConnections().add(newConnection);
-        Set<User> listUser= Set.of(newConnection);
-        Objects.requireNonNull(user).setConnections(listUser);
+        Objects.requireNonNull(user).getConnections().add(newConnection);
         userRepository.save(user);
     }
 

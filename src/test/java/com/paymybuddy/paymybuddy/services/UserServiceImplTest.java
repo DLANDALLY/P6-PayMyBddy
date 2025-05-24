@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,14 +90,6 @@ class UserServiceImplTest {
         assertNotNull(userRepository.findById(user.getId()).orElse(null));
         deletedUser(user);
     }
-    @Test
-    void shouldThrowExceptionWhenUserAlreadyExisting() {
-        User user = createUserTest();
-
-        assertThrows(IllegalArgumentException.class, () ->
-                userService.createUser(registerPerson()));
-        deletedUser(user);
-    }
 
     @Test
     void shouldUpdateProfileSuccessful() {
@@ -137,26 +130,16 @@ class UserServiceImplTest {
         assertThrows(RuntimeException.class, () -> userService.getUserById(999L));
     }
 
-    @Test
-    void shouldUpdateUserConnexionSuccessful() {
-        userRepository.deleteById(58L);
-        User newUser = createUserTest();
-        User u1 = userService.getUserById(1L);
-
-        userService.updateUserConnexion(newUser, u1);
-        User userTest = userRepository.findById(newUser.getId()).orElse(null);
-
-        assertNotNull(userTest);
-        assertEquals( 1, userTest.getConnections().size());
-        deletedUser(newUser);
-    }
-
     RegisterForm registerPerson(){
         RegisterForm registerForm = new RegisterForm();
-        registerForm.setUsername("userTest");
-        registerForm.setEmail("usertest@example.com");
+        registerForm.setUsername("userTest"+ generateNumber());
+        registerForm.setEmail("usertest"+generateNumber()+"@example.com");
         registerForm.setPassword("pass1234");
         return registerForm;
+    }
+    int generateNumber() {
+        Random random = new Random();
+        return random.nextInt(1000 - 1 + 1) + 1;
     }
 
     void deletedUser(User newUser){

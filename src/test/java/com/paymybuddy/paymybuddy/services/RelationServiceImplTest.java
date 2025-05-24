@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,12 +81,17 @@ class RelationServiceImplTest {
         return userService.createUser(registerForm);
     }
 
+
     RegisterForm newPerson(){
         RegisterForm registerForm = new RegisterForm();
-        registerForm.setUsername("userTest");
-        registerForm.setEmail("usertest@example.com");
+        registerForm.setUsername("userTest"+ generateNumber());
+        registerForm.setEmail("usertest"+generateNumber()+"@example.com");
         registerForm.setPassword("pass1234");
         return registerForm;
+    }
+    int generateNumber() {
+        Random random = new Random();
+        return random.nextInt(1000 - 1 + 1) + 1;
     }
 
     void deletedUser(User user){
