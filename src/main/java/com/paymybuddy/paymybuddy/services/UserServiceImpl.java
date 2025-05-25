@@ -101,15 +101,4 @@ public class UserServiceImpl implements IUser {
         Objects.requireNonNull(user).getConnections().add(newConnection);
         userRepository.save(user);
     }
-
-//    @Override
-//    public void updatePassword() {
-//        List<User> users = userRepository.findAll();
-//        users.stream()
-//                .map(u -> {
-//                    u.setPassword(passwordEncoder.encode("pass1234"));
-//                    return u;})
-//                .toList();
-//        userRepository.saveAll(users);
-//    }
 }

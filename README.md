@@ -33,7 +33,7 @@ Le projet simule une plateforme de transfert d'argent entre particuliers avec ge
 
 Avant de lancer l'application, assurez-vous d'avoir installé :
 
-- [Java 17](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+- [Java 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 - [Maven](https://maven.apache.org/)
 - [PostgreSQL](https://www.postgresql.org/download/)
 - [Docker](https://www.docker.com/)
