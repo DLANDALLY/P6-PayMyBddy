@@ -62,8 +62,10 @@ Vous pouvez utiliser ce compte utilisateur pour tester rapidement l'application 
 
 Email : alice@example.com
 Mot de passe : pass1234
+
 ```
 
 ## Modèle physique de données
 
 ![mypaybuddy MPD- public](https://github.com/user-attachments/assets/22d814bf-51d6-400a-8df5-2df1c027f698)
+![Diagramme_MPD drawio](https://github.com/user-attachments/assets/e0665627-ce95-47ac-8590-a6a884305c6f)
